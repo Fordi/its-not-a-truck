@@ -1,0 +1,17 @@
+{
+  "name": "its-not-a-truck",
+  "version": "1.0.0",
+  "description": "Test tube sort puzzle (it's a series of tubes)",
+  "browser": "src/index.html",
+  "scripts": {
+    "start": "npx http-serve src"
+  },
+  "author": "Bryan Elliott <fordiman@gmail.com> (https://fordi.org)",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.16.0",
+    "eslint-config-recommended": "^4.1.0",
+    "eslint-import-resolver-typescript": "^3.5.1",
+    "eslint-plugin-import": "^2.26.0"
+  }
+}

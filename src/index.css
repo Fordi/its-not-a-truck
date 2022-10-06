@@ -1,0 +1,68 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background: #333;
+}
+
+tube-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+test-tube {
+  display: block;
+  transition: transform 0.4s, box-shadow 0.4s;
+  font-size: 30px;
+  width: 1em;
+  height: 4em;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column-reverse;
+  margin: 0.25em 0.25em;
+  overflow: hidden;
+  border-radius: 0 0 0.5em 0.5em;
+  position: relative;
+}
+
+test-tube[pouring] {
+  z-index: 1;
+}
+
+test-tube:after {
+  content: '';
+  position: absolute;
+  border-radius: 0 0 0.5em 0.5em;
+  background: linear-gradient(90deg, rgba(2,0,36,0.25) 0%, rgba(9,9,121,0.1) 25%, rgba(2,171,228,0.1) 80%, rgba(255,255,255,0.4) 82%, rgba(2,180,234,0.1) 84%, rgba(0,212,255,0.1) 94%, rgba(0,52,62,0.25) 100%);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  box-shadow: 0 -0.5em 0.5em -0.5em inset rgb(0 0 0 / 50%);
+}
+
+test-tube[selected] {
+  transform: translate(0, -0.5em);
+  box-shadow: 0 0 0.5em -0.25em white;
+}
+
+test-tube>.level {
+  width: 1em;
+  height: 1em;
+  background: transparent;
+  transition: transform 0.4s, height 0.4s;
+}
+
+test-tube[pouring]>.level {
+  transform: translate(0, 50%) skewY(-60deg) scale(1, 1.5);
+}
