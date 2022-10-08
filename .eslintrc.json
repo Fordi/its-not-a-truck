@@ -10,7 +10,8 @@
     "Promise": "readonly",
     "Set": "readonly",
     "Map": "readonly",
-    "WeakMap": "readonly"
+    "WeakMap": "readonly",
+    "globalThis": "readonly"
   },
   "plugins": [
     "import"

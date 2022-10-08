@@ -10,7 +10,9 @@ body {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  background: #333;
+  font-size: 10vw;
+  font-family: sans-serif;
+  color: white;
 }
 
 tube-container {
@@ -18,15 +20,16 @@ tube-container {
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
+  background: #333;
 }
 
 test-tube {
   display: block;
   transition: transform 0.4s, box-shadow 0.4s;
-  font-size: 30px;
   width: 1em;
   height: 4em;
   border: 1px solid black;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column-reverse;
   margin: 0.25em 0.25em;
@@ -65,4 +68,24 @@ test-tube>.level {
 
 test-tube[pouring]>.level {
   transform: translate(0, 50%) skewY(-60deg) scale(1, 1.5);
+}
+
+sort-hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  z-index: 9001;
+  justify-content: flex-end;
+}
+
+sort-level {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
 }

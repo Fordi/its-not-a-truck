@@ -31,11 +31,11 @@ class TestTube extends HTMLElement {
   }
 
   get contents() {
-    return (this.getAttribute('contents') ?? '').split(',').map(a => a.trim()).filter(a => !!a);
+    return (this.getAttribute('contents') ?? '').split(';').map(a => a.trim()).filter(a => !!a);
   }
 
   set contents(v) {
-    this.setAttribute('contents', v.join(', '));
+    this.setAttribute('contents', v.join('; '));
   }
 
   push(v) {

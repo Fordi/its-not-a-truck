@@ -1,6 +1,10 @@
-import COLORS from './COLORS.mjs';
+import { createElement } from './createElement.mjs';
+import UndoButton from './UndoButton.mjs';
+import ResetButton from './ResetButton.mjs';
 
 const { floor, random } = Math;
+
+const tubeRatio = 3;
 
 class SortPuzzle extends HTMLElement {
   #history = [];
@@ -30,16 +34,21 @@ class SortPuzzle extends HTMLElement {
   }
 
   reset() {
-    const testTubes = [...this.querySelectorAll('test-tube')];
-    this.#initialColors.forEach((colors, index) => {
-      testTubes[index].setAttribute('contents', colors.join(', '));
-    });
-    this.#history = [];
+    if (this.#history.length === 0) {
+      this.newGame(this.#level - 1);
+    } else {
+      const testTubes = [...this.querySelectorAll('test-tube')];
+      this.#initialColors.forEach((colors, index) => {
+        testTubes[index].setAttribute('contents', colors.join('; '));
+      });
+      this.#history = [];
+    }
   }
 
   constructor() {
     super();
     window.addEventListener('keydown', (e) => this.onKeyPressed(e));
+    window.addEventListener('resize', () => this.#calculateSize());
   }
 
   onKeyPressed({ key }) {
@@ -58,10 +67,41 @@ class SortPuzzle extends HTMLElement {
     }
   }
 
+  #calculateSize() {
+    const { tubes } = this.#colorsAndTubes(this.#level);
+    const { width, height } = this.parentNode.getBoundingClientRect();
+    const rar = width / (height / tubeRatio);
+    const rows = Math.round(Math.sqrt(tubes / rar));
+    const cols = Math.ceil(tubes / rows);
+    const maxTubeWidth = width * (2/3) / cols;
+    const maxTubeHeight = height * (2/3) / rows / tubeRatio;
+    const fontSize = Math.min(
+      maxTubeWidth,
+      maxTubeHeight
+    );
+    this.style.fontSize = `${fontSize}px`;
+  }
+
+  #colorsAndTubes(level) {
+    const colors = Math.min(24, 3 + Math.floor(level / 2));
+    return {
+      colors,
+      tubes: colors + 2,
+    };
+  }
+
+  genColor(n) {
+    let hue, lit = 0.5, sat = 1;
+    const l = Math.floor(n / 6);
+    hue = (n % 6) * 360 / 6;
+    lit = 0.5 + (l ? (0.3333 * (l & 1 ? -1 : 1) / (1 + (l >> 1))) : 0);
+    return `hsl(${hue} ${sat * 100}% ${lit * 100}%)`;
+  }
+
   newGame(level = 0) {
     this.#level = level;
-    const colors = Math.min(COLORS.length, 3 + Math.floor(level / 5));
-    const tubes = colors + 2;
+    const { colors, tubes } = this.#colorsAndTubes(level);
+    this.#calculateSize();
     while (this.firstChild) {
       this.removeChild(this.firstChild);
     }
@@ -70,20 +110,22 @@ class SortPuzzle extends HTMLElement {
     for (let i = 0; i < tubes; i++) {
       testTubes.push(this.ownerDocument.createElement('test-tube'));
     }
+
     // Create a bin of colors, four of the same color for each tube
     const bin = [];
     for (let i = 0; i < colors; i += 0.25) {
-      bin.push(COLORS[floor(i)]);
+      bin.push(this.genColor(Math.floor(i), colors));
     }
     this.#initialColors = [];
     // Pick them into the first `tubes` tubes at random
     for (let i = 0; i < colors; i++) {
-      const colors = [];
+      const tube = [];
       for (let j = 0; j < 4; j++) {
-        colors.push([bin.splice(floor(random() * bin.length), 1)]);
+        const next = bin.splice(floor(random() * bin.length), 1);
+        tube.push(next);
       }
-      testTubes[i].setAttribute('contents', colors.join(', '));
-      this.#initialColors.push(colors);
+      testTubes[i].setAttribute('contents', tube.join(';'));
+      this.#initialColors.push(tube);
     }
     for (let i = colors; i < tubes; i++) {
       this.#initialColors.push([]);
@@ -108,17 +150,11 @@ class SortPuzzle extends HTMLElement {
   }
 
   undoButton() {
-    const b = this.ownerDocument.createElement('button');
-    b.addEventListener('click', () => this.undo());
-    b.textContent = 'undo';
-    return b;
+    return createElement(UndoButton, { size: '1em', onClick: () => this.undo(), title: 'Undo' });
   }
 
   resetButton() {
-    const b = this.ownerDocument.createElement('button');
-    b.addEventListener('click', () => this.reset());
-    b.textContent = 'reset';
-    return b;
+    return createElement(ResetButton, { size: '1em', onClick: () => this.reset(), title: 'Reset' });
   }
 
   get selection() {
@@ -143,7 +179,7 @@ class SortPuzzle extends HTMLElement {
   }
 
   connectedCallback() {
-    this.newGame(parseInt(localStorage.getItem('level') ?? '0'));
+    this.newGame(parseInt(localStorage.getItem('level') ?? '17'));
   }
 }
 
