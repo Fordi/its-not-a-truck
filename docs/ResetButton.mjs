@@ -1,8 +1,8 @@
-import { SVGNS } from './createElement.mjs';
+const SVGNS = 'http://www.w3.org/2000/svg';
 
 const ResetButton = ({ onClick, size }) => (
   [[SVGNS, "svg"], {
-    xmlns: "http://www.w3.org/2000/svg",
+    xmlns: SVGNS,
     viewBox: "0 0 1000 1000",
     width: size,
     height: size,

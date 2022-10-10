@@ -1,9 +1,9 @@
-import { SVGNS } from './createElement.mjs';
+const SVGNS = 'http://www.w3.org/2000/svg';
 
 const UndoButton = ({ onClick, size }) => (
   [[SVGNS, "svg"], {
     viewBox: "0 0 512 512",
-    xmlns: "http://www.w3.org/2000/svg",
+    xmlns: SVGNS,
     width: size,
     height: size,
     onClick,

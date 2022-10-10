@@ -10,22 +10,41 @@ class TestTube extends HTMLElement {
   #contents = null;
 
   #updateColors() {
-    const levels = [...this.querySelectorAll('.level')];
+    const game = this.closest('sort-puzzle');
+    if (!game) {
+      console.warn('attempt to set attribute before connected');
+    }
+    const { levels } = game;
+
+    for (let i = 0; i < levels; i++) {
+      if (!this.#childNodes[i]) {
+        this.#childNodes[i] = Object.assign(this.ownerDocument.createElement('div'), {
+          className: 'level',
+          style: {
+            height: `${1 / levels}em`
+          }
+        });
+        this.appendChild(this.#childNodes[i]);
+      }
+      this.#childNodes.slice(levels).forEach((child) => {
+        this.removeChild(child);
+      });
+      this.#childNodes.length = levels;
+    }    
     const contents = this.contents;
-    levels.forEach((level, index) => {
+    this.#childNodes.forEach((level, index) => {
       if (contents[index]) {
         level.style.background = contents[index];
-        level.style.height = '';
+        level.style.height = `${4 / levels}em`;
       } else {
         level.style.height = 0;
       }
     });
   }
 
+  #childNodes = [];
+
   connectedCallback() {
-    for (let i = 0; i < 4; i++) {
-      this.appendChild(Object.assign(this.ownerDocument.createElement('div'), { className: 'level' }));
-    }
     this.addEventListener('click', (event) => this.onClick(event));
     this.#updateColors();
   }
@@ -47,7 +66,7 @@ class TestTube extends HTMLElement {
     const ret = [tmp.pop()];
     if (length === -1) {
       const tgtLen = target.contents.length;
-      while ((tmp[tmp.length - 1] === ret[0]) && (ret.length + tgtLen) < 4) {
+      while ((tmp[tmp.length - 1] === ret[0]) && (ret.length + tgtLen) < this.closest('sort-puzzle').levels) {
         ret.push(tmp.pop());
       }
     } else {
@@ -80,7 +99,7 @@ class TestTube extends HTMLElement {
     if (selection && selection !== this) {
       const { contents, top } = this;
       if (
-        contents.length < 4
+        contents.length < this.#game.levels
         && (
           !top
           || top === selection.top
