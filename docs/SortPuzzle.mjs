@@ -1,4 +1,4 @@
-import { createElement } from './createElement.mjs';
+import createElement from 'https://unpkg.com/@fordi-org/create-element/dist/esm/index.js';
 import UndoButton from './UndoButton.mjs';
 import ResetButton from './ResetButton.mjs';
 import random from './mulberry32.mjs';
@@ -67,7 +67,7 @@ class SortPuzzle extends HTMLElement {
     if (k === 'backspace') {
       this.undo();
     }
-    if (key === 'r') {
+    if (key === 'r' && this.#history.length) {
       this.reset();
     }
   }
