@@ -18,7 +18,6 @@ const isDomRep = (d) => isArray(d) && (typeof d[0] === 'function' || isTagName(d
 const normalizeToDOM = (d) => {
   if (d === null) return document.createTextNode('');
   if (d instanceof Node) return d;
-  // eslint-disable-next-line no-use-before-define
   if (isDomRep(d)) return createElement(...d);
   if (typeof d !== 'object') return document.createTextNode(d);
   throw new Error('Attempted to normalize invalid DOM object:', d);
@@ -28,10 +27,8 @@ const propertyHandlers = [
   ['className', (el, value) => {
     const cls = Array.from(new Set(toArray(value).filter((a) => a).join(' ').split(' '))).join(' ');
     if (el.namespaceURI === SVGNS) {
-      // eslint-disable-next-line no-param-reassign
       el.className.baseVal = cls;
     } else {
-      // eslint-disable-next-line no-param-reassign
       el.className = cls;
     }
   }],
