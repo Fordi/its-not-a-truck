@@ -15,5 +15,23 @@
         window.addEventListener('click', () => {
             document.body.requestFullscreen();
         });
+        const wrap = Object.assign(document.createElement('div'), {
+            className: 'confetti-wrap',
+        });
+        Object.assign(wrap.style, {
+            transform: 'rotate(45deg)',
+            top: '2em',
+            left: '2em',
+        });
+        wrap.appendChild(Object.assign(document.createElement('div'), {
+            className: 'confetti-flake',
+            style: {
+                color: 'white'
+            },
+            onanimationend: () => {
+                // wrap.parentNode.removeChild(wrap);
+            }
+        }));
+        document.body.appendChild(wrap);
     </script>
 </html>

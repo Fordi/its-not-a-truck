@@ -1,3 +1,6 @@
+import createElement from 'https://unpkg.com/@fordi-org/create-element/dist/esm/index.js';
+import ConfettiFlake from "./Confetti.mjs";
+
 class TestTube extends HTMLElement {
   static get observedAttributes() {
     return ['contents'];
@@ -58,7 +61,25 @@ class TestTube extends HTMLElement {
   }
 
   push(v) {
-    this.contents = [...this.contents, ...v];
+    const { contents } = this;
+    this.contents = [...contents, ...v];
+    const { top, left, width } = this.getBoundingClientRect();
+    if (!this.full) return;
+    for (let i = 0; i < 50; i++) {
+      setTimeout(() => {
+        document.body.appendChild(createElement(...ConfettiFlake({
+          color: contents[0],
+          top: `${top}px`,
+          left: `${left + Math.random() * width}px`,
+        })))
+      }, Math.random() * 500);
+    }
+  }
+
+  get full() {
+    const { contents } = this;
+    const [first, ...rest] = contents;
+    return !rest.some(a => a !== first) && contents.length === this.#game.levels;
   }
 
   pop(target, length = -1) {

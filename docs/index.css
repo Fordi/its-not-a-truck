@@ -93,3 +93,59 @@ sort-level {
   left: 0;
   top: 0;
 }
+.confetti-wrap {
+  position: fixed;
+}
+.confetti-flake {
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  border: 1px solid currentColor;
+  border-radius: 0.125em;
+  animation-name: pop;
+  animation-duration: 0.8s;
+  animation-timing-function: linear;
+  box-shadow: 0 0 0.25em white;
+  z-index: 0;
+}
+@keyframes pop {
+  0% {
+    background-color: transparent;
+    width: 2px;
+    height: 2px;
+    margin-left: -1px;
+    margin-top: -1px;
+    opacity: 0;
+  }
+  1% {
+    background-color: currentColor;
+    opacity: 1;
+  }
+  25% {
+    background-color: currentColor;
+    width: 0.125em;
+    height: 0.125em;
+    margin-left: -0.0625em;
+    margin-top: -0.0625em;
+    opacity: 1;
+  }
+  75% {
+    margin-left: -0.0625em;
+    margin-top: -1.0625em;
+    background-color: transparent;
+  }
+  100% {
+    background-color: transparent;
+    width: 0.25em;
+    height: 0.25em;
+    margin-left: -0.125em;
+    margin-top: -1.125em;
+    opacity: 0;
+  }
+}
+.confetti-flake.pop {
+  width: 0;
+  height: 0;
+  background-color: currentColor;
+  border-radius: 0;
+}
