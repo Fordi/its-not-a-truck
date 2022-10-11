@@ -1,6 +1,6 @@
 # Tubes (a sort puzzle)
 
-This is my attempt at the basic sort puzzle game.
+This is my attempt at the basic sort puzzle game. [Play now!](https://fordi.github.io/its-not-a-truck/)
 
 Implemented:
 
