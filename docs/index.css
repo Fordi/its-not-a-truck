@@ -62,7 +62,6 @@ test-tube[pouring] {
 test-tube:after {
   content: '';
   position: absolute;
-  
   border-top: 2px;
   border-radius: 0 0 0.5em 0.5em;
   background: linear-gradient(90deg, rgba(2,0,36,0.25) 0%, rgba(9,9,121,0.1) 25%, rgba(2,171,228,0.1) 80%, rgba(255,255,255,0.4) 82%, rgba(2,180,234,0.1) 84%, rgba(0,212,255,0.1) 94%, rgba(0,52,62,0.25) 100%);
@@ -87,6 +86,10 @@ test-tube>.level {
 
 test-tube[pouring]>.level {
   transform: translate(0, 50%) skewY(-60deg) scale(1, 1.5);
+}
+
+test-tube[pouring-left]>.level {
+  transform: translate(0, 50%) skewY(60deg) scale(1, 1.5);
 }
 
 sort-hud {

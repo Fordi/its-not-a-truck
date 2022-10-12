@@ -96,14 +96,22 @@ class TestTube extends HTMLElement {
       }
     }
     this.contents = tmp;
-    this.setAttribute('pouring', true);
     const rect = this.getBoundingClientRect();
     const other = target.getBoundingClientRect();
+    const deltaX = other.left - rect.left;
+    const deltaY = other.top - rect.top;
+    const left = deltaX < 0;
+    this.setAttribute(left ? 'pouring-left' : 'pouring', true);
     
-    this.style.transform = `translate(${other.left - rect.left}px, ${other.top - rect.top}px) translate(-2em, -2em) rotate(60deg)`;
+    this.style.transform = [
+      `translate(${deltaX}px, ${deltaY}px)`,
+      `translate(${left ? 2 : -2}em, -2em)`,
+      `rotate(${left ? -60 : 60}deg)`
+    ].join(' ');
     this.style.pointerEvents = 'none';
     setTimeout(() => {
       this.removeAttribute('pouring');
+      this.removeAttribute('pouring-left');
       this.style.transform = '';
       this.style.pointerEvents = '';
     }, 600);
