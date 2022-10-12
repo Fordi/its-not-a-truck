@@ -31,15 +31,27 @@ test-tube {
   transition: transform 0.4s, box-shadow 0.4s;
   width: 1em;
   height: 4em;
-  border: 1px solid black;
+  border: 1px solid white;
   box-sizing: border-box;
   display: flex;
   flex-direction: column-reverse;
   margin: 0.25em 0.25em;
   overflow: hidden;
-  border-radius: 0 0 0.5em 0.5em;
+  border-radius: 0.0625em 0.0625em 0.5em 0.5em;
   position: relative;
   background: rgba(255, 255, 255, 0.1);
+}
+
+test-tube:before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0.25em;
+  box-shadow: 0 -0.0625em 0.0625em 0 inset rgba(255,255,255,0.5),
+              0  0.0625em 0.0625em 0 inset rgba(  0,  0,  0,0.5);
 }
 
 test-tube[pouring] {
@@ -49,6 +61,8 @@ test-tube[pouring] {
 test-tube:after {
   content: '';
   position: absolute;
+  
+  border-top: 2px;
   border-radius: 0 0 0.5em 0.5em;
   background: linear-gradient(90deg, rgba(2,0,36,0.25) 0%, rgba(9,9,121,0.1) 25%, rgba(2,171,228,0.1) 80%, rgba(255,255,255,0.4) 82%, rgba(2,180,234,0.1) 84%, rgba(0,212,255,0.1) 94%, rgba(0,52,62,0.25) 100%);
   width: 100%;
