@@ -85,11 +85,11 @@ test-tube>.level {
 }
 
 test-tube[pouring]>.level {
-  transform: translate(0, 50%) skewY(-60deg) scale(1, 1.5);
+  transform: translate(0, 0.45em) skewY(-60deg);
 }
 
 test-tube[pouring-left]>.level {
-  transform: translate(0, 50%) skewY(60deg) scale(1, 1.5);
+  transform: translate(0, 0.45em) skewY(60deg);
 }
 
 sort-hud {
