@@ -36,6 +36,7 @@ class SortPuzzle extends HTMLElement {
     const [stuff, from, to] = this.#history.pop();
     from.pop(to, stuff.length);
     to.push(stuff);
+    [...this.querySelectorAll('test-tube')].forEach((tube) => tube.removeAttribute('selected'));
   }
 
   reset() {
