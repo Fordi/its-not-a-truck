@@ -17,6 +17,7 @@ body {
   font-size: 10vw;
   font-family: sans-serif;
   color: white;
+  user-select: none;
 }
 
 tube-container {
