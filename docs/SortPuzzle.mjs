@@ -2,6 +2,7 @@ import createElement from 'https://unpkg.com/@fordi-org/create-element/dist/esm/
 import UndoButton from './UndoButton.mjs';
 import ResetButton from './ResetButton.mjs';
 import mulberry32 from './mulberry32.mjs';
+import difficulty from './difficulty.mjs';
 
 const { floor } = Math;
 
@@ -53,10 +54,9 @@ class SortPuzzle extends HTMLElement {
     window.addEventListener('resize', () => this.#calculateSize());
   }
 
-  get maxExtraLevels() { return Math.min(4, Math.floor((this.level - 1) / 10) + 1); }
-  get levels() { return Math.floor((this.level - 1) % (this.maxExtraLevels + 1)) + 3; }
-  get colors() { return Math.min(24, 3 + Math.floor((this.level - 1) / (this.maxExtraLevels + 1))); }
-  get tubes() { return this.colors + 2; }
+  get levels() { return difficulty[this.level - 1].cap; }
+  get colors() { return difficulty[this.level - 1].col; }
+  get tubes() { return this.colors + 1; }
 
   #calculateSize() {
     const { tubes } = this;
