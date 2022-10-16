@@ -85,7 +85,7 @@ class SortPuzzle extends HTMLElement {
   }
 
   newGame(level = 0) {
-    this.#random = mulberry32(0x2b00b1e5);
+    this.#random = mulberry32(0xdeadbeef + (0x2b00b1e5 * this.levels * this.colors));
     this.level = Math.max(1, level);
     level = this.level;
     const { colors, tubes, levels } = this;
