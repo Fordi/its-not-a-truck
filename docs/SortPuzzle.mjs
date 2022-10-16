@@ -1,7 +1,7 @@
 import createElement from 'https://unpkg.com/@fordi-org/create-element/dist/esm/index.js';
 import UndoButton from './UndoButton.mjs';
 import ResetButton from './ResetButton.mjs';
-import random from './mulberry32.mjs';
+import mulberry32 from './mulberry32.mjs';
 
 const { floor } = Math;
 
@@ -10,6 +10,7 @@ const tubeRatio = 3;
 class SortPuzzle extends HTMLElement {
   #history = [];
   #level;
+  #random;
   set level(v) { 
     this.#level = Math.max(1, v);
   }
@@ -59,7 +60,6 @@ class SortPuzzle extends HTMLElement {
 
   onKeyPressed({ key }) {
     const k = key.toLowerCase();
-    // console.log(key, /^[0-9]$/.test(k));
     if (/^[0-9]$/.test(key)) {
       const index = (parseInt(key) + 9) % 10;
       const tubes = this.querySelectorAll('test-tube');
@@ -102,6 +102,7 @@ class SortPuzzle extends HTMLElement {
   }
 
   newGame(level = 0) {
+    this.#random = mulberry32(0x2b00b1e5);
     this.level = Math.max(1, level);
     level = this.level;
     const { colors, tubes, levels } = this;
@@ -128,7 +129,7 @@ class SortPuzzle extends HTMLElement {
     for (let i = 0; i < colors; i++) {
       const tube = [];
       for (let j = 0; j < this.levels; j++) {
-        const next = bin.splice(floor(random() * bin.length), 1);
+        const next = bin.splice(floor(this.#random() * bin.length), 1);
         tube.push(next);
       }
       tubeContainer.appendChild(testTubes[i]);
