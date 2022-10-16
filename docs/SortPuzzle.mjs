@@ -41,36 +41,16 @@ class SortPuzzle extends HTMLElement {
   }
 
   reset() {
-    if (this.#history.length === 0) {
-      this.newGame(this.level - 1);
-    } else {
-      const testTubes = [...this.querySelectorAll('test-tube')];
-      this.#initialColors.forEach((colors, index) => {
-        testTubes[index].setAttribute('contents', colors.join('; '));
-      });
-      this.#history = [];
-    }
+    const testTubes = [...this.querySelectorAll('test-tube')];
+    this.#initialColors.forEach((colors, index) => {
+      testTubes[index].setAttribute('contents', colors.join('; '));
+    });
+    this.#history = [];
   }
 
   constructor() {
     super();
-    window.addEventListener('keydown', (e) => this.onKeyPressed(e));
     window.addEventListener('resize', () => this.#calculateSize());
-  }
-
-  onKeyPressed({ key }) {
-    const k = key.toLowerCase();
-    if (/^[0-9]$/.test(key)) {
-      const index = (parseInt(key) + 9) % 10;
-      const tubes = this.querySelectorAll('test-tube');
-      tubes[index].onClick();
-    }
-    if (k === 'backspace') {
-      this.undo();
-    }
-    if (key === 'r' && this.#history.length) {
-      this.reset();
-    }
   }
 
   get maxExtraLevels() { return Math.min(4, Math.floor((this.level - 1) / 10) + 1); }
@@ -80,7 +60,10 @@ class SortPuzzle extends HTMLElement {
 
   #calculateSize() {
     const { tubes } = this;
-    const { width, height } = this.parentNode.getBoundingClientRect();
+
+    const { width, height } = visualViewport;
+    this.style.height = `${height}px`;
+    document.body.style.height = `${height}px`;
     const rar = width / (height / tubeRatio);
     const rows = Math.round(Math.sqrt(tubes / rar));
     const cols = Math.ceil(tubes / rows);
@@ -141,17 +124,27 @@ class SortPuzzle extends HTMLElement {
       tubeContainer.appendChild(testTubes[i]);
     }
     const hud = this.ownerDocument.createElement('sort-hud');
+    hud.appendChild(this.levelIndicator());
     hud.appendChild(this.undoButton());
     hud.appendChild(this.resetButton());
-    hud.appendChild(this.levelIndicator());
     this.appendChild(hud);
     this.#history = [];
     localStorage.setItem('level', this.level);
   }
 
   levelIndicator() {
-    const b = this.ownerDocument.createElement('sort-level');
-    b.textContent = this.level;
+    const b = this.ownerDocument.createElement('input');
+    b.type = 'number';
+    b.name = 'sort-level';
+    b.value = this.level;
+    const onChange = ({ target: { value } }) => {
+      this.newGame(parseInt(value));
+    };
+    const onFocus = ({ target }) => {
+      target.select();
+    }
+    b.addEventListener('change', onChange);
+    b.addEventListener('focus', onFocus);
     return b;
   }
 

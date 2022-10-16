@@ -105,11 +105,17 @@ sort-hud {
   justify-content: flex-end;
 }
 
-sort-level {
+input[name="sort-level"] {
   display: block;
-  position: absolute;
-  left: 0;
-  top: 0;
+  font: inherit;
+  color: inherit;
+  width: 1px;
+  background: transparent;
+  border: none;
+  flex: 1 1 auto;
+}
+input[name="sort-level"]:focus {
+  outline: none;
 }
 .confetti-wrap {
   position: fixed;
