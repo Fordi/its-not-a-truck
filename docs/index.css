@@ -173,3 +173,66 @@ input[name="sort-level"]:focus {
   background-color: currentColor;
   border-radius: 0;
 }
+
+.beat-level {
+  position: fixed;
+  /* display: flex; */
+  text-align: center;
+  width: 100vw;
+  text-shadow: 0 0 0.5em black;
+  background: rgba(0, 0, 0, 0.5);
+}
+.credits {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  perspective: 100vw;
+  text-align: center;
+}
+
+.credits--restart a {
+  color: white;
+  text-decoration: none;
+  font-size: 9vw;
+  display: block;
+  animation: linear fadein 15s;
+  position: relative;
+  z-index: 10000;
+  background: linear-gradient(0deg, transparent, black);
+  height: 100vh;
+}
+
+.credits--crawl {
+  font-size: 7vw;
+  transform: rotateX(45deg) translateY(100vh) translateZ(50vw);
+  transform-origin: 50% 100%;
+  position: absolute;
+  top: 39vh;
+  left: 0;
+  animation: linear crawl 180s;
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  33% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes crawl {
+  0% {
+    transform: rotateX(45deg) translateY(100vh) translateZ(50vw);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(45deg) translateY(-3000vh) translateZ(50vw);
+    opacity: 0;
+  }
+}

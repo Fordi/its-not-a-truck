@@ -4,6 +4,9 @@ import ResetButton from './ResetButton.mjs';
 import mulberry32 from './mulberry32.mjs';
 import difficulty from './difficulty.mjs';
 import COLORS from './COLORS.mjs';
+import { YouBeatLevelX } from './YouBeatLevelX.mjs';
+import ConfettiFlake from './Confetti.mjs';
+import Credits from './Credits.mjs';
 
 const { floor } = Math;
 
@@ -55,9 +58,11 @@ class SortPuzzle extends HTMLElement {
     window.addEventListener('resize', () => this.#calculateSize());
   }
 
-  get levels() { return difficulty[(this.level ?? 1) - 1].cap; }
-  get colors() { return difficulty[(this.level ?? 1) - 1].col; }
+  get levels() { return difficulty[this.level - 1]?.cap ?? 9; }
+  get colors() { return difficulty[this.level - 1]?.col ?? COLORS.length; }
   get tubes() { return this.colors + 2; }
+  get difficulty() { return difficulty[this.level - 1]?.diff ?? 100 }
+
 
   #calculateSize() {
     const { tubes } = this;
@@ -81,9 +86,18 @@ class SortPuzzle extends HTMLElement {
     return COLORS[n];
   }
 
-  newGame(level = 0) {
-    this.#random = mulberry32(0xdeadbeef + (0x2b00b1e5 * this.levels * this.colors));
+  seed() {
+    return 0xdeadbeef + (0x2b00b1e5 * this.difficulty * this.level) | 0;
+  }
+
+  newGame(level = 0) {   
+    this.style.transition = '';
+    this.style.opacity = 1;
+    if (this.credits) {
+      this.credits.parentNode.removeChild(this.credits);
+    }
     this.level = Math.max(1, level);
+    this.#random = mulberry32(this.seed());
     level = this.level;
     const { colors, tubes, levels } = this;
     this.#calculateSize();
@@ -157,6 +171,39 @@ class SortPuzzle extends HTMLElement {
       return this.querySelector('test-tube[selected]');
   }
 
+  youBeatLevelX() {
+    const fanfare = createElement(...YouBeatLevelX({
+      game: this
+    }));
+    document.body.appendChild(fanfare);
+    const promises = [];
+    for (let i = 0; i < 500; i++) {
+      promises.push(new Promise((resolve) => {
+        setTimeout(() => {
+          const up = Math.random() > 0.5;
+          document.body.appendChild(createElement(...ConfettiFlake({
+            color: COLORS[Math.floor(Math.random() * COLORS.length)],
+            top: up ? `${visualViewport.height}px`: `0px`,
+            left: `${Math.random() * visualViewport.width}px`,
+            angle: up ? [-90, 90] : [-270, -90],
+            onAnimationEnd: () => resolve(),
+          })))
+        }, Math.random() * 2000);
+      }));
+    }
+    Promise.all(promises).then(() => {
+      document.body.removeChild(fanfare);
+      this.newGame(this.level + 1);
+    });
+  }
+
+  youBeatItAll() {
+    this.style.transition = 'opacity, 4s';
+    this.style.opacity = 0;
+    this.credits = createElement(...Credits({ game: this }));
+    document.body.appendChild(this.credits);
+  }
+
   checkWon() {
     const done = ![...this.querySelectorAll('test-tube')]
         .some((tube) => {
@@ -166,11 +213,11 @@ class SortPuzzle extends HTMLElement {
             return c.slice(1).some((d) => d !== c[0]);
         });
     if (done) {
-      this.style.opacity = 0.5;
-      setTimeout(() => {
-        this.newGame(this.level + 1);
-        this.style.opacity = 1;
-      }, 2000);
+      if (this.level === 200) {
+        this.youBeatItAll();
+      } else {
+        this.youBeatLevelX();
+      }
     }
   }
 

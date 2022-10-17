@@ -1,17 +1,20 @@
+import COLORS from "./COLORS.mjs";
+
 const params = [];
 
-const difficulty = ({ cap, col }) => 
-  Math.pow(col, 0.6) * Math.pow(cap, 0.4);
+export const difficulty = ({ cap, col }) => 
+  (Math.pow(col, 0.5) * Math.pow(cap, 1.25)) * 100 / 81;
 
-
-for (let col = 0; col < 1000; col++) {
-  for (let cap = 0; cap < 5; cap++) {
-    params.push({ col: col + 3, cap: cap + 3 });
+for (let col = 0; col <= (COLORS.length - 3); col++) {
+  for (let cap = 0; cap <= 7; cap++) {
+    const props = { cap: cap + 3, col: col + 3 };
+    props.diff = difficulty(props);
+    params.push(props);
   }
 }
 
 params.sort((a, b) => {
-  return difficulty(a) - difficulty(b);
+  return a.diff - b.diff;
 });
 
 export default params;
