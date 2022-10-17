@@ -207,19 +207,17 @@ class SortPuzzle extends HTMLElement {
     this.credits = createElement(...Credits({ game: this }));
     document.body.appendChild(this.credits);
   }
-
-  checkStuck() {
+  stuck() {
     const tubes = [...this.querySelectorAll('test-tube')];
-    const canMove = tubes.some((from) => {
+    return !tubes.some((from) => {
       const fromC = [...from.contents];
-      const topColor = fromC.pop();
+      const topColor = fromC.length && fromC.pop();
       let topCount = 1;
-      while (fromC[fromC.length - 1] === topColor) {
+      while (fromC.length && fromC[fromC.length - 1] === topColor) {
         fromC.pop();
         topCount++;
       }
       return tubes.some((to) => {
-        if (from === to) return false;
         const contents = [...to.contents];
         return (
           from !== to
@@ -231,7 +229,10 @@ class SortPuzzle extends HTMLElement {
         );
       });
     });
-    if (!canMove) {
+  }
+
+  checkStuck() {
+    if (this.stuck()) {
       setTimeout(() => {
         this.querySelector('.undo-button').classList.add('no-moves');
       }, 5000);
@@ -239,23 +240,23 @@ class SortPuzzle extends HTMLElement {
       this.querySelector('.undo-button').classList.remove('no-moves');
     }
   }
-
-  checkWon() {
-    this.checkStuck();
-    const tubes = [...this.querySelectorAll('test-tube')];
-    const done = !tubes.some((tube) => {
+  done() {
+    return ![...this.querySelectorAll('test-tube')].some((tube) => {
       const c = tube.contents;
       if (!c.length) return false;
       if (c.length !== this.levels) return true;
       return c.slice(1).some((d) => d !== c[0]);
     });
-    
-    if (done) {
+  }
+  checkWon() {
+    if (this.done()) {
       if (this.level === 200) {
         this.youBeatItAll();
       } else {
         this.youBeatLevelX();
       }
+    } else {
+      this.checkStuck();
     }
   }
 
