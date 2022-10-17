@@ -56,7 +56,7 @@ class SortPuzzle extends HTMLElement {
 
   get levels() { return difficulty[(this.level ?? 1) - 1].cap; }
   get colors() { return difficulty[(this.level ?? 1) - 1].col; }
-  get tubes() { return this.colors + 1; }
+  get tubes() { return this.colors + 2; }
 
   #calculateSize() {
     const { tubes } = this;
