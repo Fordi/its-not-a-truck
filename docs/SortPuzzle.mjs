@@ -182,7 +182,7 @@ class SortPuzzle extends HTMLElement {
         setTimeout(() => {
           const up = Math.random() > 0.5;
           document.body.appendChild(createElement(...ConfettiFlake({
-            color: COLORS[Math.floor(Math.random() * COLORS.length)],
+            color: COLORS[Math.floor(Math.random() * this.colors)],
             top: up ? `${visualViewport.height}px`: `0px`,
             left: `${Math.random() * visualViewport.width}px`,
             angle: up ? [-90, 90] : [-270, -90],
