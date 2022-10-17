@@ -177,7 +177,7 @@ class SortPuzzle extends HTMLElement {
     }));
     document.body.appendChild(fanfare);
     const promises = [];
-    for (let i = 0; i < 500; i++) {
+    for (let i = 0; i < 250; i++) {
       promises.push(new Promise((resolve) => {
         setTimeout(() => {
           const up = Math.random() > 0.5;
@@ -188,7 +188,7 @@ class SortPuzzle extends HTMLElement {
             angle: up ? [-90, 90] : [-270, -90],
             onAnimationEnd: () => resolve(),
           })))
-        }, Math.random() * 2000);
+        }, Math.random() * 1500);
       }));
     }
     Promise.all(promises).then(() => {
