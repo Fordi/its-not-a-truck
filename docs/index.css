@@ -102,17 +102,18 @@ sort-hud {
   display: flex;
   flex-direction: row;
   z-index: 9001;
-  justify-content: flex-end;
+  justify-content: space-between;
+  font-size: 8vh;
 }
 
 input[name="sort-level"] {
   display: block;
   font: inherit;
   color: inherit;
-  width: 1px;
+  width: 2em;
   background: transparent;
   border: none;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
 }
 input[name="sort-level"]:focus {
   outline: none;

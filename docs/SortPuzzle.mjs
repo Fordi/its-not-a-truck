@@ -138,8 +138,10 @@ class SortPuzzle extends HTMLElement {
     }
     const hud = this.ownerDocument.createElement('sort-hud');
     hud.appendChild(this.levelIndicator());
-    hud.appendChild(this.undoButton());
-    hud.appendChild(this.resetButton());
+    const hudRight = this.ownerDocument.createElement('hud-buttons');
+    hud.appendChild(hudRight);
+    hudRight.appendChild(this.undoButton());
+    hudRight.appendChild(this.resetButton());
     this.appendChild(hud);
     this.#history = [];
     localStorage.setItem('level', this.level);
