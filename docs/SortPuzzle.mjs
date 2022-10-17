@@ -232,9 +232,13 @@ class SortPuzzle extends HTMLElement {
   }
 
   checkStuck() {
+    if (this.stuckTimeout) {
+      clearTimeout(this.stuckTimeout);
+    }
     if (this.stuck()) {
-      setTimeout(() => {
+      this.stuckTimeout = setTimeout(() => {
         this.querySelector('.undo-button').classList.add('no-moves');
+        delete this.stuckTimeout;
       }, 5000);
     } else {
       this.querySelector('.undo-button').classList.remove('no-moves');
