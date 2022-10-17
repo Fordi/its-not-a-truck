@@ -43,6 +43,7 @@ class SortPuzzle extends HTMLElement {
     from.pop(to, stuff.length);
     to.push(stuff);
     [...this.querySelectorAll('test-tube')].forEach((tube) => tube.removeAttribute('selected'));
+    this.checkStuck();
   }
 
   reset() {
@@ -51,6 +52,7 @@ class SortPuzzle extends HTMLElement {
       testTubes[index].setAttribute('contents', colors.join('; '));
     });
     this.#history = [];
+    this.checkStuck();
   }
 
   constructor() {
@@ -204,25 +206,46 @@ class SortPuzzle extends HTMLElement {
     document.body.appendChild(this.credits);
   }
 
+  checkStuck() {
+    const tubes = [...this.querySelectorAll('test-tube')];
+    const canMove = tubes.some((from) => {
+      const fromC = [...from.contents];
+      const topColor = fromC.pop();
+      let topCount = 1;
+      while (fromC[fromC.length - 1] === topColor) {
+        fromC.pop();
+        topCount++;
+      }
+      return tubes.some((to) => {
+        if (from === to) return false;
+        const contents = [...to.contents];
+        return (
+          from !== to
+          && contents.length + topCount <= this.levels
+          && (
+            contents.length === 0
+            || contents.pop() === topColor
+          )
+        );
+      });
+    });
+    if (!canMove) {
+      setTimeout(() => {
+        this.querySelector('.undo-button').classList.add('no-moves');
+      }, 5000);
+    } else {
+      this.querySelector('.undo-button').classList.remove('no-moves');
+    }
+  }
+
   checkWon() {
+    this.checkStuck();
     const tubes = [...this.querySelectorAll('test-tube')];
     const done = !tubes.some((tube) => {
       const c = tube.contents;
       if (!c.length) return false;
       if (c.length !== this.levels) return true;
       return c.slice(1).some((d) => d !== c[0]);
-    });
-    const canMove = tubes.some((from) => {
-      const topColor = [...from.contents].pop();
-      return tubes.some((to) => {
-        if (from === to) return false;
-        const contents = [...to.contents];
-        return (
-          from !== to
-          && contents.length <= this.levels
-          && contents.pop() === topColor
-        );
-      });
     });
     
     if (done) {
@@ -231,13 +254,6 @@ class SortPuzzle extends HTMLElement {
       } else {
         this.youBeatLevelX();
       }
-    }
-    if (!canMove) {
-      setTimeout(() => {
-        this.querySelector('undo-button').classList.add('no-moves');
-      }, 5000);
-    } else {
-      this.querySelector('undo-button').classList.remove('no-moves');
     }
   }
 

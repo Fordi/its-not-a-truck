@@ -179,7 +179,19 @@ input[name="sort-level"]:focus {
 }
 .undo-button.no-moves {
   color: red;
-  box-shadow: 0 0 1em red;
+  animation: glow 0.5s infinite;
+}
+
+@keyframes glow {
+  0% {
+    color: white;
+  }
+  50% {
+    color: red;
+  }
+  100% {
+    color: white;
+  }
 }
 
 .beat-level {
