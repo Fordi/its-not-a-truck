@@ -54,8 +54,8 @@ class SortPuzzle extends HTMLElement {
     window.addEventListener('resize', () => this.#calculateSize());
   }
 
-  get levels() { return difficulty[this.level - 1].cap; }
-  get colors() { return difficulty[this.level - 1].col; }
+  get levels() { return difficulty[(this.level ?? 1) - 1].cap; }
+  get colors() { return difficulty[(this.level ?? 1) - 1].col; }
   get tubes() { return this.colors + 1; }
 
   #calculateSize() {
