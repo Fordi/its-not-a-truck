@@ -1,4 +1,4 @@
-import createElement from 'https://unpkg.com/@fordi-org/create-element/dist/esm/index.js';
+import createElement from './createElement.mjs';
 import ConfettiFlake from "./Confetti.mjs";
 
 class TestTube extends HTMLElement {

@@ -6,6 +6,7 @@ const UndoButton = ({ onClick, size }) => (
     xmlns: SVGNS,
     width: size,
     height: size,
+    className: 'undo-button',
     onClick,
   }, [
     [[SVGNS, "path"], {

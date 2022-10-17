@@ -1,4 +1,4 @@
-import createElement from 'https://unpkg.com/@fordi-org/create-element/dist/esm/index.js';
+import createElement from './createElement.mjs';
 import UndoButton from './UndoButton.mjs';
 import ResetButton from './ResetButton.mjs';
 import mulberry32 from './mulberry32.mjs';
@@ -205,19 +205,39 @@ class SortPuzzle extends HTMLElement {
   }
 
   checkWon() {
-    const done = ![...this.querySelectorAll('test-tube')]
-        .some((tube) => {
-            const c = tube.contents;
-            if (!c.length) return false;
-            if (c.length !== this.levels) return true;
-            return c.slice(1).some((d) => d !== c[0]);
-        });
+    const tubes = [...this.querySelectorAll('test-tube')];
+    const done = !tubes.some((tube) => {
+      const c = tube.contents;
+      if (!c.length) return false;
+      if (c.length !== this.levels) return true;
+      return c.slice(1).some((d) => d !== c[0]);
+    });
+    const canMove = tubes.some((from) => {
+      const topColor = [...from.contents].pop();
+      return tubes.some((to) => {
+        if (from === to) return false;
+        const contents = [...to.contents];
+        return (
+          from !== to
+          && contents.length <= this.levels
+          && contents.pop() === topColor
+        );
+      });
+    });
+    
     if (done) {
       if (this.level === 200) {
         this.youBeatItAll();
       } else {
         this.youBeatLevelX();
       }
+    }
+    if (!canMove) {
+      setTimeout(() => {
+        this.querySelector('undo-button').classList.add('no-moves');
+      }, 5000);
+    } else {
+      this.querySelector('undo-button').classList.remove('no-moves');
     }
   }
 
