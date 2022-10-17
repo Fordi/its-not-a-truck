@@ -3,6 +3,7 @@ import UndoButton from './UndoButton.mjs';
 import ResetButton from './ResetButton.mjs';
 import mulberry32 from './mulberry32.mjs';
 import difficulty from './difficulty.mjs';
+import COLORS from './COLORS.mjs';
 
 const { floor } = Math;
 
@@ -77,11 +78,7 @@ class SortPuzzle extends HTMLElement {
   }
 
   genColor(n) {
-    let hue, lit = 0.5, sat = 1;
-    const l = Math.floor(n / 6);
-    hue = (n % 6) * 360 / 6;
-    lit = 0.5 + (l ? (0.3333 * (l & 1 ? -1 : 1) / (1 + (l >> 1))) : 0);
-    return `hsl(${hue} ${sat * 100}% ${lit * 100}%)`;
+    return COLORS[n];
   }
 
   newGame(level = 0) {
