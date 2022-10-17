@@ -192,16 +192,24 @@ input[name="sort-level"]:focus {
   text-align: center;
 }
 
+.credits--restart {
+  z-index: 10000;
+  background: linear-gradient(0deg, transparent, black);
+  height: 100vh;
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  justify-content: space-between;
+  animation: linear fadein 15s;
+}
+
 .credits--restart a {
   color: white;
   text-decoration: none;
   font-size: 9vw;
   display: block;
-  animation: linear fadein 15s;
-  position: relative;
-  z-index: 10000;
-  background: linear-gradient(0deg, transparent, black);
-  height: 100vh;
 }
 
 .credits--crawl {

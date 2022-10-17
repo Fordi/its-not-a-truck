@@ -7,7 +7,14 @@ export default function Credits({ game }) {
           game.newGame(1);
           return false;
         },
-      }, ["Tap to start over"]]
+      }, ["Start over"]],
+      ['a', {
+        href: '#',
+        onClick: () => {
+          game.newGame(201);
+          return false;
+        },
+      }, ["Keep going"]]
     ]],
     ['div', { className: 'credits--crawl' }, [
       ['p', {}, ["That's it.  You've done it.  That's all the levels.  Congratulations!"]],
