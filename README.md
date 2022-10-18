@@ -12,8 +12,7 @@ Implemented:
 
 To do:
 
-* "You Won!" message!
-* Detection of "no more moves" state!
+* Address bugs as users report them
 
 Not to do:
 
