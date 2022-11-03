@@ -37,7 +37,9 @@ class TestTube extends HTMLElement {
     const contents = this.contents;
     this.#childNodes.forEach((level, index) => {
       if (contents[index]) {
+        const color = contents[index].match(/#[A-F0-9]{3}/)[0];
         level.style.background = contents[index];
+        level.style.outline = `1px solid ${color}`;
         level.style.height = `${4 / levels}em`;
       } else {
         level.style.height = 0;

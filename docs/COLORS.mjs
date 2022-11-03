@@ -18,7 +18,7 @@ const COLORS = [
   "#FAA",
   "#AAF",
   "#EEE",
-  "linear-gradient(90deg, #111, #333, #111, #333, #111, #333, #111, #333, #111, #333)",
+  "linear-gradient(90deg, #555, #BBB, #555, #BBB, #555, #BBB, #555, #BBB, #555, #BBB)",
   "linear-gradient(90deg, #FF1, #3D4, #FF1, #3D4, #FF1, #3D4, #FF1, #3D4, #FF1, #3D4)",
   "linear-gradient(90deg, #04B, #06F, #04B, #06F, #04B, #06F, #04B, #06F, #04B, #06F)",
   "linear-gradient(90deg, #FE6, #FA0, #FE6, #FA0, #FE6, #FA0, #FE6, #FA0, #FE6, #FA0)",

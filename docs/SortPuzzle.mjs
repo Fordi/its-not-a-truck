@@ -12,6 +12,26 @@ const { floor } = Math;
 
 const tubeRatio = 3;
 
+const unsolvable = {
+  84: 1,
+  87: 1,
+  101: 1,
+  103: 1,
+  104: 1,
+  105: 1,
+  108: 1,
+  109: 1,
+  112: 1,
+  117: 1,
+  124: 1,
+  125: 1,
+  127: 1,
+  128: 1,
+  130: 1,
+  132: 1,
+  134: 1,
+};
+
 class SortPuzzle extends HTMLElement {
   #history = [];
   #level;
@@ -62,7 +82,14 @@ class SortPuzzle extends HTMLElement {
 
   get levels() { return difficulty[this.level - 1]?.cap ?? 9; }
   get colors() { return difficulty[this.level - 1]?.col ?? COLORS.length; }
-  get tubes() { return this.colors + 2; }
+  get tubes() {
+    return (
+      this.colors + 2
+      + (unsolvable[this.level] ?? 0)
+      + (this.level > 136 ? 1 : 0)
+      + (this.level > 175 ? 1 : 0)
+    );
+  }
   get difficulty() { return difficulty[this.level - 1]?.diff ?? 100 }
 
 
