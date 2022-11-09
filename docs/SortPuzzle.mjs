@@ -179,8 +179,13 @@ class SortPuzzle extends HTMLElement {
     b.type = 'number';
     b.name = 'sort-level';
     b.value = this.level;
-    const onChange = ({ target: { value } }) => {
-      this.newGame(parseInt(value));
+    const onChange = ({ target }) => {
+      const level = parseInt(target.value);
+      if (Number.isNaN(level)) {
+        target.value = this.#level;
+      } else {
+        this.newGame(level);
+      }
     };
     const onFocus = ({ target }) => {
       target.select();
