@@ -96,9 +96,10 @@ class SortPuzzle extends HTMLElement {
   #calculateSize() {
     const { tubes } = this;
 
-    const { width, height } = visualViewport;
+    let { width, height } = visualViewport;
     this.style.maxHeight = `${height}px`;
     document.body.style.height = `${height}px`;
+    height *= 0.92;
     const rar = width / (height / tubeRatio);
     const rows = Math.round(Math.sqrt(tubes / rar));
     const cols = Math.ceil(tubes / rows);
