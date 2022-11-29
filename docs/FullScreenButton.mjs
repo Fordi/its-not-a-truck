@@ -2,7 +2,7 @@ const SVG = "http://www.w3.org/2000/svg";
 
 const uid = `fs_${Math.random().toString(36).substring(2)}`;
 
-const FullScreenButton = ({ size, onClick, active }) => (
+const FullScreenButton = ({ size, onClick, active, title }) => (
   [[SVG, "svg"], {
     viewBox: "0 0 512 512",
     xmlns: "http://www.w3.org/2000/svg",
@@ -11,6 +11,7 @@ const FullScreenButton = ({ size, onClick, active }) => (
     height: size,
     onClick,
     class: active ? `active` : `inactive`,
+    title,
   }, [
     [[SVG, "defs"], {}, [
       [[SVG, "style"], {}, [`

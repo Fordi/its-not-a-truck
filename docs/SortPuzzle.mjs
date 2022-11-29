@@ -73,6 +73,17 @@ class SortPuzzle extends HTMLElement {
     this.#history.push([stuff, to, from]);
   }
 
+  async undoAll() {
+    [...this.querySelectorAll('test-tube')].forEach((tube) => tube.removeAttribute('selected'));
+    while (this.#history.length && await this.stuck()) {
+      const [stuff, from, to] = this.#history.pop();
+      from.pop(to, stuff.length);
+      to.push(stuff);
+      await new Promise((r) => setTimeout(r, 250));
+    }
+    this.checkStuck();
+  }
+
   undo() {
     if (!this.#history.length) return;
     const [stuff, from, to] = this.#history.pop();
@@ -216,7 +227,28 @@ class SortPuzzle extends HTMLElement {
   }
 
   undoButton() {
-    return createElement(UndoButton, { size: BUTTON_SIZE, onClick: () => this.undo(), title: 'Undo' });
+    let timeout = null;
+    let held = false;
+    return createElement(UndoButton, {
+      size: BUTTON_SIZE, 
+      onMouseDown: () => {
+        timeout = setTimeout(() => {
+          held = true;
+          timeout = null;
+          this.undoAll();
+        }, 250);
+      },
+      onClick: () => {
+        if (held) {
+          held = false;
+        } else {
+          clearTimeout(timeout);
+          timeout = null;
+          this.undo();
+        }
+      },
+      title: 'Undo'
+    });
   }
 
   hintButton() {

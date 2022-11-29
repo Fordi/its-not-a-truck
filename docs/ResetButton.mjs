@@ -1,12 +1,13 @@
 const SVGNS = 'http://www.w3.org/2000/svg';
 
-const ResetButton = ({ onClick, size }) => (
+const ResetButton = ({ onClick, size, title }) => (
   [[SVGNS, "svg"], {
     xmlns: SVGNS,
     viewBox: "0 0 1000 1000",
     width: size,
     height: size,
     onClick,
+    title,
   }, [
     [[SVGNS, "path"], {
       fill: 'currentColor',

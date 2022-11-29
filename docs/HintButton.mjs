@@ -1,12 +1,13 @@
 const SVG = "http://www.w3.org/2000/svg";
 
-const HintButton = ({ size, onClick, remain }) => (
+const HintButton = ({ size, onClick, remain, title }) => (
   [[SVG, "svg"], {
     viewBox: "0 0 2000 2000",
     width: size,
     height: size,
     xmlns: SVG,
     onClick,
+    title,
   }, [
     [[SVG, "path"], {
       fill: "currentColor",

@@ -1,6 +1,6 @@
 const SVGNS = 'http://www.w3.org/2000/svg';
 
-const UndoButton = ({ onClick, size }) => (
+const UndoButton = ({ onClick, onMouseDown, size, title }) => (
   [[SVGNS, "svg"], {
     viewBox: "0 0 512 512",
     xmlns: SVGNS,
@@ -8,6 +8,9 @@ const UndoButton = ({ onClick, size }) => (
     height: size,
     className: 'undo-button',
     onClick,
+    onMouseDown,
+    onTouchStart: onMouseDown,
+    title,
   }, [
     [[SVGNS, "path"], {
       fill: "currentColor",
