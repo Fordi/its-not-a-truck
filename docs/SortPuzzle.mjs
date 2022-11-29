@@ -109,14 +109,13 @@ class SortPuzzle extends HTMLElement {
   }
   get difficulty() { return difficulty[this.level - 1]?.diff ?? 100 }
 
-
   #calculateSize() {
     const { tubes } = this;
 
     let { width, height } = visualViewport;
     this.style.maxHeight = `${height}px`;
     document.body.style.height = `${height}px`;
-    height *= 0.92;
+    height *= 0.84;
     const rar = width / (height / tubeRatio);
     const rows = Math.round(Math.sqrt(tubes / rar));
     const cols = Math.ceil(tubes / rows);
