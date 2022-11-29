@@ -78,6 +78,20 @@ class TestTube extends HTMLElement {
     }
   }
 
+  bump() {
+    this.setAttribute('bumping', true);
+    setTimeout(() => {
+      this.removeAttribute('bumping');
+    }, 1000);
+  }
+
+  glow() {
+    this.setAttribute('glowing', true);
+    setTimeout(() => {
+      this.removeAttribute('glowing');
+    }, 1000);
+  }
+
   get full() {
     const { contents } = this;
     const [first, ...rest] = contents;

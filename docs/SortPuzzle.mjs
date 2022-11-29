@@ -7,10 +7,17 @@ import COLORS from './COLORS.mjs';
 import { YouBeatLevelX } from './YouBeatLevelX.mjs';
 import ConfettiFlake from './Confetti.mjs';
 import Credits from './Credits.mjs';
+import { nextBestMove } from './NextBestMove.mjs';
+import HintButton from './HintButton.mjs';
+import FullScreenButton from './FullScreenButton.mjs';
 
 const { floor } = Math;
 
 const tubeRatio = 3;
+
+const INITIAL_HINTS = 5;
+const BUTTON_SIZE = '0.75em';
+const MAX_FLAKES = 125;
 
 const unsolvable = {
   84: 1,
@@ -36,6 +43,15 @@ class SortPuzzle extends HTMLElement {
   #history = [];
   #level;
   #random;
+  #hintsLeft = INITIAL_HINTS;
+  #hintCounter;
+  get hintsLeft() { return this.#hintsLeft; }
+  set hintsLeft(v) {
+    this.#hintsLeft = v;
+    if (this.#hintCounter) {
+      this.#hintCounter.textContent = v;
+    }
+  }
   set level(v) { 
     this.#level = Math.max(1, v);
   }
@@ -73,6 +89,7 @@ class SortPuzzle extends HTMLElement {
     });
     this.#history = [];
     this.checkStuck();
+    this.hintsLeft = INITIAL_HINTS;
   }
 
   constructor() {
@@ -120,7 +137,8 @@ class SortPuzzle extends HTMLElement {
     return 0xdeadbeef + (0x2b00b1e5 * this.difficulty * this.level) | 0;
   }
 
-  newGame(level = 0) {   
+  newGame(level = 0) {
+    this.hintsLeft = INITIAL_HINTS;
     this.style.transition = '';
     this.style.opacity = 1;
     if (this.credits) {
@@ -168,8 +186,10 @@ class SortPuzzle extends HTMLElement {
     hud.appendChild(this.levelIndicator());
     const hudRight = this.ownerDocument.createElement('hud-buttons');
     hud.appendChild(hudRight);
+    hudRight.appendChild(this.hintButton());
     hudRight.appendChild(this.undoButton());
     hudRight.appendChild(this.resetButton());
+    hudRight.appendChild(this.fullScreenButton());
     this.appendChild(hud);
     this.#history = [];
     localStorage.setItem('level', this.level);
@@ -197,11 +217,63 @@ class SortPuzzle extends HTMLElement {
   }
 
   undoButton() {
-    return createElement(UndoButton, { size: '1em', onClick: () => this.undo(), title: 'Undo' });
+    return createElement(UndoButton, { size: BUTTON_SIZE, onClick: () => this.undo(), title: 'Undo' });
+  }
+
+  hintButton() {
+    const hintButton = createElement(HintButton, { size: BUTTON_SIZE, onClick: async () => {
+      if (this.hintsLeft > 0) {
+        try {
+          const next = await nextBestMove();
+          const [from, to] = next;
+          const tubes = this.querySelectorAll('test-tube');
+          tubes[from].bump();
+          tubes[to].glow();
+          this.hintsLeft -= 1;
+        } catch (e) {
+          hintButton.style.transition = 'color 0.4s';
+          hintButton.style.color = 'red';
+          setTimeout(() => {
+            hintButton.style.color = '';
+          }, 2000);
+        }
+      }
+    }, title: 'Hint', remain: this.hintsLeft });
+    this.#hintCounter = hintButton.querySelector('tspan');
+    return hintButton;
   }
 
   resetButton() {
-    return createElement(ResetButton, { size: '1em', onClick: () => this.reset(), title: 'Reset' });
+    return createElement(ResetButton, { size: BUTTON_SIZE, onClick: () => this.reset(), title: 'Reset' });
+  }
+
+  fullScreenButton() {
+    const fsb = createElement(FullScreenButton, {
+      size: BUTTON_SIZE,
+      title: 'Toggle fullscreen',
+      onClick: async () => {
+        try {
+          if (document.fullscreenElement !== null) {
+            await document.exitFullscreen();
+          } else {
+            const onChange = () => {
+              if (!document.fullscreenElement) {
+                fsb.classList.remove('active');
+                fsb.classList.add('inactive');    
+                document.removeEventListener('fullscreenchange', onChange);
+              }
+            };
+            await document.body.requestFullscreen({ navigationUI: "hide" });
+            document.addEventListener('fullscreenchange', onChange);
+            fsb.classList.remove('inactive');
+            fsb.classList.add('active');
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    });
+    return fsb;
   }
 
   get selection() {
@@ -214,7 +286,7 @@ class SortPuzzle extends HTMLElement {
     }));
     document.body.appendChild(fanfare);
     const promises = [];
-    for (let i = 0; i < 250; i++) {
+    for (let i = 0; i < MAX_FLAKES; i++) {
       promises.push(new Promise((resolve) => {
         setTimeout(() => {
           const up = Math.random() > 0.5;
@@ -240,35 +312,20 @@ class SortPuzzle extends HTMLElement {
     this.credits = createElement(...Credits({ game: this }));
     document.body.appendChild(this.credits);
   }
-  stuck() {
-    const tubes = [...this.querySelectorAll('test-tube')];
-    return !tubes.some((from) => {
-      const fromC = [...from.contents];
-      const topColor = fromC.length && fromC.pop();
-      let topCount = 1;
-      while (fromC.length && fromC[fromC.length - 1] === topColor) {
-        fromC.pop();
-        topCount++;
-      }
-      return tubes.some((to) => {
-        const contents = [...to.contents];
-        return (
-          from !== to
-          && contents.length + topCount <= this.levels
-          && (
-            contents.length === 0
-            || contents.pop() === topColor
-          )
-        );
-      });
-    });
+  async stuck() {
+    try {
+      await nextBestMove();
+      return false;
+    } catch (e) {
+      return true;
+    }
   }
 
-  checkStuck() {
+  async checkStuck() {
     if (this.stuckTimeout) {
       clearTimeout(this.stuckTimeout);
     }
-    if (this.stuck()) {
+    if (await this.stuck()) {
       this.stuckTimeout = setTimeout(() => {
         this.querySelector('.undo-button').classList.add('no-moves');
         delete this.stuckTimeout;
@@ -277,6 +334,7 @@ class SortPuzzle extends HTMLElement {
       this.querySelector('.undo-button').classList.remove('no-moves');
     }
   }
+
   done() {
     return ![...this.querySelectorAll('test-tube')].some((tube) => {
       const c = tube.contents;

@@ -20,6 +20,36 @@ body {
   user-select: none;
 }
 
+body.high-detail test-tube {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);  
+}
+
+body.high-detail test-tube:before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0.25em;
+  box-shadow: 0 -0.0625em 0.0625em 0 inset rgba(255,255,255,0.5),
+              0  0.0625em 0.0625em 0 inset rgba(  0,  0,  0,0.5);
+}
+
+body.high-detail test-tube:after {
+  content: '';
+  position: absolute;
+  border-top: 2px;
+  border-radius: 0 0 0.5em 0.5em;
+  background: linear-gradient(90deg, rgba(2,0,36,0.25) 0%, rgba(9,9,121,0.1) 25%, rgba(2,171,228,0.1) 80%, rgba(255,255,255,0.4) 82%, rgba(2,180,234,0.1) 84%, rgba(0,212,255,0.1) 94%, rgba(0,52,62,0.25) 100%);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  box-shadow: 0 -0.5em 0.5em -0.5em inset rgb(0 0 0 / 50%);
+}
+
 tube-container {
   display: flex;
   flex-direction: row;
@@ -39,42 +69,22 @@ test-tube {
   margin: 0.25em 0.25em;
   overflow: hidden;
   border-radius: 0.0625em 0.0625em 0.5em 0.5em;
-  position: relative;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-test-tube:before {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 0.25em;
-  box-shadow: 0 -0.0625em 0.0625em 0 inset rgba(255,255,255,0.5),
-              0  0.0625em 0.0625em 0 inset rgba(  0,  0,  0,0.5);
+  position: relative;  
 }
 
 test-tube[pouring] {
   z-index: 1;
 }
 
-test-tube:after {
-  content: '';
-  position: absolute;
-  border-top: 2px;
-  border-radius: 0 0 0.5em 0.5em;
-  background: linear-gradient(90deg, rgba(2,0,36,0.25) 0%, rgba(9,9,121,0.1) 25%, rgba(2,171,228,0.1) 80%, rgba(255,255,255,0.4) 82%, rgba(2,180,234,0.1) 84%, rgba(0,212,255,0.1) 94%, rgba(0,52,62,0.25) 100%);
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  box-shadow: 0 -0.5em 0.5em -0.5em inset rgb(0 0 0 / 50%);
-}
-
 test-tube[selected] {
   transform: translate(0, -0.5em);
   box-shadow: 0 0 0.5em -0.25em white;
+}
+test-tube[bumping] {
+  transform: translate(0, -0.5em);
+}
+test-tube[glowing] {
+  box-shadow: 0 0 0.5em 0em white;
 }
 
 test-tube>.level {
@@ -105,6 +115,9 @@ sort-hud {
   justify-content: space-between;
   font-size: 8vh;
 }
+hud-buttons>* {
+  margin-left: 0.5em;
+}
 
 input[name="sort-level"] {
   display: block;
@@ -121,6 +134,10 @@ input[name="sort-level"]:focus {
 .confetti-wrap {
   position: fixed;
 }
+body.high-detail .confetti-flake {
+  box-shadow: 0 0 0.25em white;
+}
+
 .confetti-flake {
   display: block;
   position: relative;
@@ -130,7 +147,6 @@ input[name="sort-level"]:focus {
   animation-name: pop;
   animation-duration: 0.8s;
   animation-timing-function: linear;
-  box-shadow: 0 0 0.25em white;
   z-index: 0;
 }
 @keyframes pop {
