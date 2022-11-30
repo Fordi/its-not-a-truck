@@ -16,7 +16,7 @@ const { floor } = Math;
 const tubeRatio = 3;
 
 const INITIAL_HINTS = 5;
-const BUTTON_SIZE = '0.75em';
+const BUTTON_SIZE = '10vw';
 const MAX_FLAKES = 125;
 
 const unsolvable = {
