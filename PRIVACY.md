@@ -11,8 +11,8 @@ When you visit, use, or navigate our Services, we will not collect or process an
 
 ## What information is retained within the app?
 
-"It's not a Truck" stores only the last level the user was playing.  It does not communicate to any servers or retain any cookies or send any beacons.
+"It's not a Truck" stores only the last level the user was playing.  It does not communicate to any servers, retain any cookies, or send any beacons.
 
 ## Questions or concerns?
 
-Reading this privacy notice will help you understand your privacy rights and choices. If you do not agree with our policies and practices, please do not use our Services. If you still have any questions or concerns, please contact us at fordiman@gmail.com. 
+Reading this privacy notice will help you understand your privacy rights and choices. If you do not agree with our policies and practices, please do not use our Services. If you still have any questions or concerns, please contact us at [fordiman@gmail.com](mailto:fordiman@gmail.com).
