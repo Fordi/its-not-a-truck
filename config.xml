@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="org.fordi.its_not_a_truck" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>It's Not a Truck</name>
+    <description>Test tube sort puzzle (it's a series of tubes)</description>
+    <author email="fordiman@gmail.com" href="https://fordi.org">
+        Bryan Elliott
+    </author>
+    <content src="index.html" />
+    <allow-intent href="http://*/*"  />
+    <allow-intent href="https://*/*"  />
+</widget>
