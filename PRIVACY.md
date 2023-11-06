@@ -1,13 +1,10 @@
 # Privacy Policy
 
-This privacy notice for Fordi.org ("we," "us," or "our"), describes how and why we might collect, store, use, and/or share ("**process**") your information when you use our services ("**Services**"), such as when you:
-
-- Download and use our mobile application (It's not a Truck, "the app"), or any other application of ours that links to this privacy notice
-- Engage with us in other related ways, including any sales, marketing, or events
+This privacy notice for Fordi.org ("we," "us," or "our"), describes how and why we might collect, store, use, and/or share ("process") your information when you use our services, such as when you download and use our mobile application (It's not a Truck, "the app").
 
 ## What personal information do we collect and/or process?
 
-When you visit, use, or navigate our Services, we will not collect or process any personal information, from the app, nor from third parties.
+When you download or use the app, we will not collect or process any personal information; not from the app, nor from third parties.
 
 ## What information is retained within the app?
 
