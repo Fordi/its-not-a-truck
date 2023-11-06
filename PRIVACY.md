@@ -4,7 +4,7 @@ This privacy notice for Fordi.org ("we," "us," or "our"), describes how and why 
 
 ## What personal information do we collect and/or process?
 
-When you download or use the app, we will not collect or process any personal information; not from the app, nor from third parties.
+When you download or use the app, we will not collect or process any personal information; not from the app, nor from third parties.  If you contact the us about the app, we will retain your contact information strictly for continued communication.
 
 ## What information is retained within the app?
 
