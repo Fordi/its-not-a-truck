@@ -12,4 +12,4 @@ When you download or use the app, we will not collect or process any personal in
 
 ## Questions or concerns?
 
-Reading this privacy notice will help you understand your privacy rights and choices. If you do not agree with our policies and practices, please do not use our Services. If you still have any questions or concerns, please contact us at [fordiman@gmail.com](mailto:fordiman@gmail.com).
+Reading this privacy notice will help you understand your privacy rights and choices. If you do not agree with our policies and practices, please do not use the app. If you still have any questions or concerns, please contact us at [fordiman@gmail.com](mailto:fordiman@gmail.com).
