@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" stroke-width="8">
+   <style>
+      .bg {
+         fill: #106;
+         stroke: #000;
+      }
+      .fg {
+         fill: none;
+         stroke: #FFF;
+      }
+      .shine {
+         fill: #fff;
+      }
+      @media (prefers-color-scheme: dark) {
+         .bg {
+            fill: #EF9;
+            stroke: #FFF;
+         }
+         .fg {
+            fill: none;
+            stroke: #000;
+         }
+         .shine {
+            fill: #fff;
+         }
+      }
+   </style>
+   <path class="bg" d="M217 68c-4 0-8 4-8 9v317c0 66 94 66 94 0V76c0-4-4-8-9-8zm141 0c-4 0-9 4-8 9v317c0 66 94 66 94 0V76c0-4-4-8-9-8zM77 68c-5 0-9 4-9 9v317c0 66 94 66 94 0V76c0-4-4-8-9-8z" />
+   <path d="M212 235h86v40h-86zm0-40h86v40h-86zm1 80h85v39h-85ZM72 314h85v40H72Zm0 40h85v40H72Zm0 40c3 59 82 59 85 0z" fill="#3d4" />
+   <path d="M353 354h86v40h-86zm1 40c3 59 81 59 85 0zm-1-80h86v40h-86zm-140 80c3 59 82 59 85 0zm-1-40h86v40h-86zm1-40h85v40h-85z" fill="#6ee" />
+   <path d="M212 76h86v40h-86zm0 40h86v40h-86zm0 40h86v39h-86ZM72 195h85v40H72Zm0 79h85v40H72Zm0-39h85v40H72Z" fill="#f11" />
+   <path class="fg" d="M358 72h77c3 0 5 2 5 5v316c0 62-86 62-86 0V77c0-3 2-5 4-5zm-140 0h76c3 0 5 2 5 5v316c0 62-86 62-86 0V77c0-3 2-5 5-5zM77 72h77c2 0 4 2 4 5v316c0 62-86 62-86 0V77c0-3 2-5 5-5z" />
+   <path class="shine" d="M424 76v304c0 35-24 44-24 44s32-8 32-44V76Zm-141 0v304c0 35-24 44-24 44s32-8 32-44V76Zm-142 0v304c0 35-23 44-23 44s31-8 31-44V76Z" opacity=".5" />
+</svg>
