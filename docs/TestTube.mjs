@@ -1,39 +1,42 @@
-import createElement from './createElement.mjs';
+import createElement from "./createElement.mjs";
 import ConfettiFlake from "./Confetti.mjs";
 
 class TestTube extends HTMLElement {
   static get observedAttributes() {
-    return ['contents'];
+    return ["contents"];
   }
 
   get #game() {
-    return this.closest('sort-puzzle');
+    return this.closest("sort-puzzle");
   }
 
   #contents = null;
 
   #updateColors() {
-    const game = this.closest('sort-puzzle');
+    const game = this.closest("sort-puzzle");
     if (!game) {
-      console.warn('attempt to set attribute before connected');
+      console.warn("attempt to set attribute before connected");
     }
     const { levels } = game;
 
     for (let i = 0; i < levels; i++) {
       if (!this.#childNodes[i]) {
-        this.#childNodes[i] = Object.assign(this.ownerDocument.createElement('div'), {
-          className: 'level',
-          style: {
-            height: `${1 / levels}em`
+        this.#childNodes[i] = Object.assign(
+          this.ownerDocument.createElement("div"),
+          {
+            className: "level",
+            style: {
+              height: `${1 / levels}em`,
+            },
           }
-        });
+        );
         this.appendChild(this.#childNodes[i]);
       }
       this.#childNodes.slice(levels).forEach((child) => {
         this.removeChild(child);
       });
       this.#childNodes.length = levels;
-    }    
+    }
     const contents = this.contents;
     this.#childNodes.forEach((level, index) => {
       if (contents[index]) {
@@ -50,16 +53,19 @@ class TestTube extends HTMLElement {
   #childNodes = [];
 
   connectedCallback() {
-    this.addEventListener('click', (event) => this.onClick(event));
+    this.addEventListener("click", (event) => this.onClick(event));
     this.#updateColors();
   }
 
   get contents() {
-    return (this.getAttribute('contents') ?? '').split(';').map(a => a.trim()).filter(a => !!a);
+    return (this.getAttribute("contents") ?? "")
+      .split(";")
+      .map((a) => a.trim())
+      .filter((a) => !!a);
   }
 
   set contents(v) {
-    this.setAttribute('contents', v.join('; '));
+    this.setAttribute("contents", v.join("; "));
   }
 
   push(v) {
@@ -69,33 +75,39 @@ class TestTube extends HTMLElement {
     if (!this.full) return;
     for (let i = 0; i < 50; i++) {
       setTimeout(() => {
-        document.body.appendChild(createElement(...ConfettiFlake({
-          color: contents[0],
-          top: `${top}px`,
-          left: `${left + Math.random() * width}px`,
-        })))
+        document.body.appendChild(
+          createElement(
+            ...ConfettiFlake({
+              color: contents[0],
+              top: `${top}px`,
+              left: `${left + Math.random() * width}px`,
+            })
+          )
+        );
       }, Math.random() * 500);
     }
   }
 
   bump() {
-    this.setAttribute('bumping', true);
+    this.setAttribute("bumping", true);
     setTimeout(() => {
-      this.removeAttribute('bumping');
+      this.removeAttribute("bumping");
     }, 1000);
   }
 
   glow() {
-    this.setAttribute('glowing', true);
+    this.setAttribute("glowing", true);
     setTimeout(() => {
-      this.removeAttribute('glowing');
+      this.removeAttribute("glowing");
     }, 1000);
   }
 
   get full() {
     const { contents } = this;
     const [first, ...rest] = contents;
-    return !rest.some(a => a !== first) && contents.length === this.#game.levels;
+    return (
+      !rest.some((a) => a !== first) && contents.length === this.#game.levels
+    );
   }
 
   pop(target, length = -1) {
@@ -103,7 +115,10 @@ class TestTube extends HTMLElement {
     const ret = [tmp.pop()];
     if (length === -1) {
       const tgtLen = target.contents.length;
-      while ((tmp[tmp.length - 1] === ret[0]) && (ret.length + tgtLen) < this.closest('sort-puzzle').levels) {
+      while (
+        tmp[tmp.length - 1] === ret[0] &&
+        ret.length + tgtLen < this.closest("sort-puzzle").levels
+      ) {
         ret.push(tmp.pop());
       }
     } else {
@@ -117,19 +132,19 @@ class TestTube extends HTMLElement {
     const deltaX = other.left - rect.left;
     const deltaY = other.top - rect.top;
     const left = deltaX < 0;
-    this.setAttribute(left ? 'pouring-left' : 'pouring', true);
-    
+    this.setAttribute(left ? "pouring-left" : "pouring", true);
+
     this.style.transform = [
       `translate(${deltaX}px, ${deltaY}px)`,
       `translate(${left ? 2 : -2}em, -2em)`,
-      `rotate(${left ? -60 : 60}deg)`
-    ].join(' ');
-    this.style.pointerEvents = 'none';
+      `rotate(${left ? -60 : 60}deg)`,
+    ].join(" ");
+    this.style.pointerEvents = "none";
     setTimeout(() => {
-      this.removeAttribute('pouring');
-      this.removeAttribute('pouring-left');
-      this.style.transform = '';
-      this.style.pointerEvents = '';
+      this.removeAttribute("pouring");
+      this.removeAttribute("pouring-left");
+      this.style.transform = "";
+      this.style.pointerEvents = "";
     }, 600);
     return ret;
   }
@@ -144,33 +159,30 @@ class TestTube extends HTMLElement {
     if (selection && selection !== this) {
       const { contents, top } = this;
       if (
-        contents.length < this.#game.levels
-        && (
-          !top
-          || top === selection.top
-        )
+        contents.length < this.#game.levels &&
+        (!top || top === selection.top)
       ) {
         this.#game.pour(selection, this);
         return;
       }
     }
     if (!this.contents.length) return;
-    if (this.hasAttribute('selected')) {
-      this.removeAttribute('selected');
+    if (this.hasAttribute("selected")) {
+      this.removeAttribute("selected");
     } else {
       [...this.parentNode.children].forEach((tube) => {
         if (tube !== this) {
-          tube.removeAttribute('selected');
+          tube.removeAttribute("selected");
         }
       });
-      this.setAttribute('selected', true);
+      this.setAttribute("selected", true);
     }
   }
   attributeChangedCallback(property) {
-    if (property === 'contents') {
+    if (property === "contents") {
       this.#updateColors();
     }
   }
 }
 
-customElements.define('test-tube', TestTube);
+customElements.define("test-tube", TestTube);
