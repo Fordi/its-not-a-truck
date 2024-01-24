@@ -7,11 +7,42 @@ import COLORS from "./COLORS.mjs";
 import { YouBeatLevelX } from "./YouBeatLevelX.mjs";
 import ConfettiFlake from "./Confetti.mjs";
 import Credits from "./Credits.mjs";
-import { nextBestMove } from "./NextBestMove.mjs";
 import HintButton from "./HintButton.mjs";
 import FullScreenButton from "./FullScreenButton.mjs";
 
 const { floor } = Math;
+
+// protocol:
+// -> [requestId, ...args]
+// <- [requestId, result, error]
+
+const promisifyWorker = (worker) => {
+  const deferreds = new Map();
+  worker.addEventListener("message", ({ data: [requestId, result, error] }) => {
+    const deferred = deferreds.get(requestId);
+    deferreds.delete(requestId);
+    if (error) {
+      deferred?.reject?.(error);
+    } else {
+      deferred?.resolve?.(result);
+    }
+  });
+  return async (...args) => {
+    const requestId = Math.random().toString(36).substr(2);
+    const def = {};
+    def.promise = new Promise((resolve, reject) => {
+      def.resolve = resolve;
+      def.reject = reject;
+    });
+    worker.postMessage([requestId, ...args]);
+    deferreds.set(requestId, def);
+    return def.promise;
+  };
+};
+
+const nextBestMove = promisifyWorker(
+  new Worker("./nextBestMoveWorker.mjs", { type: "module" })
+);
 
 const tubeRatio = 3;
 
@@ -45,6 +76,16 @@ class SortPuzzle extends HTMLElement {
   #random;
   #hintsLeft = INITIAL_HINTS;
   #hintCounter;
+
+  get state() {
+    return [...this.querySelectorAll("test-tube")].map((e) =>
+      (e.getAttribute("contents") || "")
+        .split(";")
+        .filter((a) => a)
+        .map((a) => a.trim())
+    );
+  }
+
   get hintsLeft() {
     return this.#hintsLeft;
   }
@@ -269,7 +310,8 @@ class SortPuzzle extends HTMLElement {
       onClick: async () => {
         if (this.hintsLeft > 0) {
           try {
-            const next = await nextBestMove();
+            const state = this.state;
+            const next = await nextBestMove(state);
             const [from, to] = next;
             const tubes = this.querySelectorAll("test-tube");
             tubes[from].bump();
@@ -374,7 +416,7 @@ class SortPuzzle extends HTMLElement {
   }
   async stuck() {
     try {
-      await nextBestMove();
+      await nextBestMove(this.state);
       return false;
     } catch (e) {
       return true;

@@ -1,11 +1,3 @@
-const getState = () =>
-  [...document.querySelectorAll("test-tube")].map((e) =>
-    (e.getAttribute("contents") || "")
-      .split(";")
-      .filter((a) => a)
-      .map((a) => a.trim())
-  );
-
 const profileGrid = (grid) => {
   const freqs = {};
   const [tubeHeight, numBalls] = grid.reduce(
@@ -114,9 +106,7 @@ const solveGrid = (
   return false;
 };
 
-export const nextBestMove = async () => {
-  const grid = getState();
-
+export const nextBestMove = async (grid) => {
   if (isSolved(grid)) {
     throw new Error("Grid is already solved");
   }
