@@ -5,8 +5,7 @@ const ResetButton = ({ onClick, size, title }) => [
   {
     xmlns: SVGNS,
     viewBox: "0 0 1000 1000",
-    width: size,
-    height: size,
+    ...(typeof size === 'string' ? { width: size, height: size } : { style: { width: `${size}vw`, maxHeight: `${size}vh` }}),
     onClick,
     title,
   },

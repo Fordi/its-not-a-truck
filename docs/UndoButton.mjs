@@ -5,8 +5,7 @@ const UndoButton = ({ onClick, onMouseDown, size, title }) => [
   {
     viewBox: "0 0 512 512",
     xmlns: SVGNS,
-    width: size,
-    height: size,
+    ...(typeof size === 'string' ? { width: size, height: size } : { style: { width: `${size}vw`, maxHeight: `${size}vh` }}),
     className: "undo-button",
     onClick,
     onMouseDown,

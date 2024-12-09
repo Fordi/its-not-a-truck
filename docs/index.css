@@ -115,8 +115,12 @@ sort-hud {
   justify-content: space-between;
   font-size: 8vh;
 }
+hud-buttons {
+  display: flex;
+  flex-direction: row;
+}
 hud-buttons>* {
-  margin-left: 0.5em;
+  margin-left: 2.5vw;
 }
 
 input[name="sort-level"] {
@@ -295,7 +299,8 @@ footer a {
   text-decoration: none;
   color: white;
   display: block;
-  height: 0.5em;
+  width: 10vw;
+  max-height: 10vh;
 }
 footer svg {
   height: 100%;

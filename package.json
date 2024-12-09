@@ -4,7 +4,7 @@
   "description": "Test tube sort puzzle (it's a series of tubes)",
   "browser": "docs/index.html",
   "scripts": {
-    "start": "npx http-serve docs"
+    "start": "npx http-server docs"
   },
   "author": "Bryan Elliott <fordiman@gmail.com> (https://fordi.org)",
   "license": "ISC",

@@ -47,7 +47,7 @@ const nextBestMove = promisifyWorker(
 const tubeRatio = 3;
 
 const INITIAL_HINTS = 5;
-const BUTTON_SIZE = "10vw";
+const BUTTON_SIZE = 10;
 const MAX_FLAKES = 125;
 
 const unsolvable = {

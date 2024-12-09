@@ -4,8 +4,7 @@ const HintButton = ({ size, onClick, remain, title }) => [
   [SVG, "svg"],
   {
     viewBox: "0 0 2000 2000",
-    width: size,
-    height: size,
+    ...(typeof size === 'string' ? { width: size, height: size } : { style: { width: `${size}vw`, maxHeight: `${size}vh` }}),
     xmlns: SVG,
     onClick,
     title,
