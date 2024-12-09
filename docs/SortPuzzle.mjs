@@ -15,6 +15,9 @@ const { floor } = Math;
 // protocol:
 // -> [requestId, ...args]
 // <- [requestId, result, error]
+const log = (...args) => {
+  document.querySelector('pre.console').textContent += args.map((obj) => JSON.stringify(obj, null, 2)).join(' ');
+};
 
 const promisifyWorker = (worker) => {
   const deferreds = new Map();
@@ -285,6 +288,7 @@ class SortPuzzle extends HTMLElement {
     return createElement(UndoButton, {
       size: BUTTON_SIZE,
       onMouseDown: () => {
+        log("MouseDown", { held, timeout });
         timeout = setTimeout(() => {
           held = true;
           timeout = null;
@@ -292,6 +296,7 @@ class SortPuzzle extends HTMLElement {
         }, 250);
       },
       onClick: () => {
+        log("Click", { held, timeout });
         if (held) {
           held = false;
         } else {

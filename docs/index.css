@@ -202,6 +202,10 @@ body.high-detail .confetti-flake {
   color: red;
   animation: glow 0.5s infinite;
 }
+.undo-button.holding {
+  color: cyan;
+  animation: glow 0.25s none;
+}
 
 @keyframes glow {
   0% {
@@ -305,4 +309,12 @@ footer a {
 footer svg {
   height: 100%;
   display: block;
+}
+pre.console {
+  margin: 0;
+  font-size: 12px;
+  text-align: left;
+  overflow: auto;
+  flex: 1 1 auto;
+  max-height: 7em;
 }
