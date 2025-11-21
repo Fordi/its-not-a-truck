@@ -8,16 +8,8 @@ import { YouBeatLevelX } from "./YouBeatLevelX.mjs";
 import ConfettiFlake from "./Confetti.mjs";
 import Credits from "./Credits.mjs";
 import HintButton from "./HintButton.mjs";
-import FullScreenButton from "./FullScreenButton.mjs";
 
 const { floor } = Math;
-
-// protocol:
-// -> [requestId, ...args]
-// <- [requestId, result, error]
-const log = (...args) => {
-  document.querySelector('pre.console').textContent += args.map((obj) => JSON.stringify(obj, null, 2)).join(' ');
-};
 
 const promisifyWorker = (worker) => {
   const deferreds = new Map();
@@ -255,7 +247,6 @@ class SortPuzzle extends HTMLElement {
     hudRight.appendChild(this.hintButton());
     hudRight.appendChild(this.undoButton());
     hudRight.appendChild(this.resetButton());
-    hudRight.appendChild(this.fullScreenButton());
     this.appendChild(hud);
     this.#history = [];
     localStorage.setItem("level", this.level);
@@ -288,7 +279,6 @@ class SortPuzzle extends HTMLElement {
     return createElement(UndoButton, {
       size: BUTTON_SIZE,
       onMouseDown: () => {
-        log("MouseDown", { held, timeout });
         timeout = setTimeout(() => {
           held = true;
           timeout = null;
@@ -296,7 +286,6 @@ class SortPuzzle extends HTMLElement {
         }, 250);
       },
       onClick: () => {
-        log("Click", { held, timeout });
         if (held) {
           held = false;
         } else {
@@ -344,35 +333,6 @@ class SortPuzzle extends HTMLElement {
       onClick: () => this.reset(),
       title: "Reset",
     });
-  }
-
-  fullScreenButton() {
-    const fsb = createElement(FullScreenButton, {
-      size: BUTTON_SIZE,
-      title: "Toggle fullscreen",
-      onClick: async () => {
-        try {
-          if (document.fullscreenElement !== null) {
-            await document.exitFullscreen();
-          } else {
-            const onChange = () => {
-              if (!document.fullscreenElement) {
-                fsb.classList.remove("active");
-                fsb.classList.add("inactive");
-                document.removeEventListener("fullscreenchange", onChange);
-              }
-            };
-            await document.body.requestFullscreen({ navigationUI: "hide" });
-            document.addEventListener("fullscreenchange", onChange);
-            fsb.classList.remove("inactive");
-            fsb.classList.add("active");
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      },
-    });
-    return fsb;
   }
 
   get selection() {

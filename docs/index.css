@@ -120,7 +120,7 @@ hud-buttons {
   flex-direction: row;
 }
 hud-buttons>* {
-  margin-left: 2.5vw;
+  margin-left: 6vw;
 }
 
 input[name="sort-level"] {
@@ -309,12 +309,4 @@ footer a {
 footer svg {
   height: 100%;
   display: block;
-}
-pre.console {
-  margin: 0;
-  font-size: 12px;
-  text-align: left;
-  overflow: auto;
-  flex: 1 1 auto;
-  max-height: 7em;
 }
