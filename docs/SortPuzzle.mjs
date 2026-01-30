@@ -173,7 +173,6 @@ class SortPuzzle extends HTMLElement {
 
   #calculateSize() {
     const { tubes } = this;
-
     let { width, height } = visualViewport;
     this.style.maxHeight = `${height}px`;
     document.body.style.height = `${height}px`;
@@ -192,6 +191,9 @@ class SortPuzzle extends HTMLElement {
   }
 
   seed() {
+    if (location.hash) {
+      return [...new TextEncoder().encode(location.hash.slice(1))].reduce((sum, byte) => (sum *136 + byte * 53) & 0xFFFFFFFF, 0xdeadbeef) | 0;
+    }
     return (0xdeadbeef + 0x2b00b1e5 * this.difficulty * this.level) | 0;
   }
 
@@ -421,9 +423,17 @@ class SortPuzzle extends HTMLElement {
       this.checkStuck();
     }
   }
-
+  #hashChange;
   connectedCallback() {
     this.newGame(parseInt(localStorage.getItem("level") ?? "1"));
+    if (!this.#hashChange) {
+      this.#hashChange = () => this.newGame(this.level);
+    }
+    window.addEventListener('hashchange', this.#hashChange);
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('hashchange', this.#hashChange);
   }
 }
 
