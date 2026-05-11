@@ -306,6 +306,11 @@ footer a {
   width: 10vw;
   max-height: 10vh;
 }
+footer a:last-child {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
 footer svg {
   height: 100%;
   display: block;

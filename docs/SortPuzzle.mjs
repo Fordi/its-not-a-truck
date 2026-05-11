@@ -3,7 +3,7 @@ import UndoButton from "./UndoButton.mjs";
 import ResetButton from "./ResetButton.mjs";
 import mulberry32 from "./mulberry32.mjs";
 import difficulty from "./difficulty.mjs";
-import COLORS from "./COLORS.mjs";
+import { generateLevelColors } from "./COLORS.mjs";
 import { YouBeatLevelX } from "./YouBeatLevelX.mjs";
 import ConfettiFlake from "./Confetti.mjs";
 import Credits from "./Credits.mjs";
@@ -156,15 +156,13 @@ class SortPuzzle extends HTMLElement {
     return difficulty[this.level - 1]?.cap ?? 9;
   }
   get colors() {
-    return difficulty[this.level - 1]?.col ?? COLORS.length;
+    return difficulty[this.level - 1]?.col ?? 36;
   }
   get tubes() {
+    
     return (
       this.colors +
-      2 +
-      (unsolvable[this.level] ?? 0) +
-      (this.level > 136 ? 1 : 0) +
-      (this.level > 175 ? 1 : 0)
+      difficulty[this.level - 1]?.extra
     );
   }
   get difficulty() {
@@ -186,16 +184,14 @@ class SortPuzzle extends HTMLElement {
     this.style.fontSize = `${fontSize}px`;
   }
 
-  genColor(n) {
-    return COLORS[n];
-  }
-
   seed() {
     if (location.hash) {
-      return [...new TextEncoder().encode(location.hash.slice(1))].reduce((sum, byte) => (sum *136 + byte * 53) & 0xFFFFFFFF, 0xdeadbeef) | 0;
+      return [...new TextEncoder().encode(location.hash.slice(1))].reduce((sum, byte) => (sum * 136 + byte * 53) & 0xFFFFFFFF, 0xdeadbeef) | 0;
     }
-    return (0xdeadbeef + 0x2b00b1e5 * this.difficulty * this.level) | 0;
+    return (0xdeadbeef + 0x2b01b1e5 * this.difficulty * this.level) | 0;
   }
+
+  palette;
 
   newGame(level = 0) {
     this.hintsLeft = INITIAL_HINTS;
@@ -217,11 +213,18 @@ class SortPuzzle extends HTMLElement {
     for (let i = 0; i < tubes; i++) {
       testTubes.push(this.ownerDocument.createElement("test-tube"));
     }
-
     // Create a bin of colors, four of the same color for each tube
+    const palette = generateLevelColors(this.level, this.colors);
+    this.palette = palette.tubes;
+    document.body.style.backgroundImage = `
+      linear-gradient(45deg, ${palette.background[0]}80 0%, ${palette.background[0]}80 49%, ${palette.background[1]}80 50%, ${palette.background[1]}80 100%),
+      linear-gradient(135deg, ${palette.background[2]}80 0%, ${palette.background[2]}80 49%, ${palette.background[3]}80 50%, ${palette.background[3]}80 100%)
+    `.trim();
     const bin = [];
-    for (let i = 0; i < colors * levels; i += 1) {
-      bin.push(this.genColor(Math.floor(i / levels), colors));
+    for (const c of palette.tubes) {
+      for (let i = 0; i < levels; i++) {
+        bin.push(c);
+      }
     }
     this.#initialColors = [];
     const tubeContainer = this.ownerDocument.createElement("tube-container");
@@ -357,7 +360,7 @@ class SortPuzzle extends HTMLElement {
             document.body.appendChild(
               createElement(
                 ...ConfettiFlake({
-                  color: COLORS[Math.floor(Math.random() * this.colors)],
+                  color: this.palette[Math.floor(Math.random() * this.palette.length)],
                   top: up ? `${visualViewport.height}px` : `0px`,
                   left: `${Math.random() * visualViewport.width}px`,
                   angle: up ? [-90, 90] : [-270, -90],
