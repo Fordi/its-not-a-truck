@@ -301,8 +301,8 @@ class SortPuzzle extends HTMLElement {
     if (!c) {
       return;
     }
-    let { width } = visualViewport;
-    let { height } = c.getBoundingClientRect();
+    let { width, height } = visualViewport;
+    height = Math.min(c.getBoundingClientRect().height, height);
     // this.style.maxHeight = `${height}px`;
     // document.body.style.height = `${height}px`;
     height *= 0.84;

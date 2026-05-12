@@ -299,13 +299,13 @@ footer {
   justify-content: space-between;
   flex: 0 0 auto;
   position: relative;
-  height: 10vw;
+  height: min(10vw, 10vh);
 }
 footer a {
   text-decoration: none;
   color: white;
   display: block;
-  max-width: 10vh;
+  height: min(10vw, 10vh);
   
 }
 footer a:last-child {
