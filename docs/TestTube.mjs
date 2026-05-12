@@ -113,7 +113,7 @@ class TestTube extends HTMLElement {
   pop(target, length = -1) {
     const tmp = this.contents;
     const ret = [tmp.pop()];
-    if (length === -1) {
+    if (length === -1 && target) {
       const tgtLen = target.contents.length;
       while (
         tmp[tmp.length - 1] === ret[0] &&
@@ -127,6 +127,9 @@ class TestTube extends HTMLElement {
       }
     }
     this.contents = tmp;
+    if (!target) {
+      return ret;
+    }
     const rect = this.getBoundingClientRect();
     const other = target.getBoundingClientRect();
     const deltaX = other.left - rect.left;
@@ -185,4 +188,8 @@ class TestTube extends HTMLElement {
   }
 }
 
-customElements.define("test-tube", TestTube);
+try {
+  customElements.define("test-tube", TestTube);
+} catch (e) {
+
+}

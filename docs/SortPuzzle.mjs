@@ -3,13 +3,15 @@ import UndoButton from "./UndoButton.mjs";
 import ResetButton from "./ResetButton.mjs";
 import mulberry32 from "./mulberry32.mjs";
 import difficulty from "./difficulty.mjs";
-import { generateLevelColors } from "./COLORS.mjs";
+import { generateLevelColors } from "./color/generateLevelColors.mjs";
 import { YouBeatLevelX } from "./YouBeatLevelX.mjs";
 import ConfettiFlake from "./Confetti.mjs";
 import Credits from "./Credits.mjs";
 import HintButton from "./HintButton.mjs";
+import "./TestTube.mjs";
 
 const { floor } = Math;
+const MAX_SHUFFLE_TIME = 3000;
 
 const promisifyWorker = (worker) => {
   const deferreds = new Map();
@@ -39,7 +41,7 @@ const nextBestMove = promisifyWorker(
   new Worker("./nextBestMoveWorker.mjs", { type: "module" })
 );
 
-const tubeRatio = 3;
+const tubeRatio = 2.978;
 
 const INITIAL_HINTS = 5;
 const BUTTON_SIZE = 10;
@@ -113,6 +115,130 @@ class SortPuzzle extends HTMLElement {
     this.#history.push([stuff, to, from]);
   }
 
+  shufflePour(from, to, count, animate) {
+    const stuff = from.pop(animate ? to : undefined, count === -1 ? this.levels - to.length : count);
+    to.push(stuff);
+  }
+
+  // Synchronous shuffle — same three-phase logic as animatedShuffle but operates
+  // entirely on plain arrays and commits to the DOM in a single pass at the end.
+  shuffleNow() {
+    const allTubes = [...this.querySelectorAll("test-tube")];
+    const cap = this.levels;
+    let state = allTubes.map(t => [...t.contents]);
+
+    const emptyIdx = state.map((s, i) => s.length === 0 ? i : -1).filter(i => i >= 0);
+    const activeIdx = state.map((s, i) => s.length > 0 ? i : -1).filter(i => i >= 0);
+    const steps = ((allTubes.length * cap) ** 1.5) | 0;
+
+    const wouldComplete = (top, toState) =>
+      toState.length + 1 === cap && toState.every(c => c === top);
+
+    const move = (from, to, count) => {
+      const n = count === -1 ? cap - state[to].length : count;
+      state[to].push(...state[from].splice(state[from].length - n, n));
+    };
+
+    // Phase 1: loosen — pour into empty tubes to create room in active tubes
+    for (let i = 0; i < emptyIdx.length; i++) {
+      const src = activeIdx[i % activeIdx.length], tgt = emptyIdx[i];
+      const max = Math.min(state[src].length - 1, cap - state[tgt].length);
+      if (max >= 1) move(src, tgt, ((this.#random() * max) | 0) + 1);
+    }
+
+    // Phase 2: randomize — random pours across all tubes
+    for (let i = 0; i < steps; i++) {
+      const sources = state.map((s, i) => i).filter(i => state[i].length > 1);
+      const from = sources[(this.#random() * sources.length) | 0];
+      if (from === undefined) continue;
+      const top = state[from][state[from].length - 1];
+      const dests = state.map((s, i) => i).filter(i =>
+        i !== from && state[i].length < cap && !wouldComplete(top, state[i])
+      );
+      if (!dests.length) continue;
+      const to = dests[(this.#random() * dests.length) | 0];
+      const max = Math.min(state[from].length - 1, cap - state[to].length);
+      if (max >= 1) move(from, to, ((this.#random() * max) | 0) + 1);
+    }
+
+    // Phase 3: drain — return originally-empty tubes to empty
+    for (const ei of emptyIdx) {
+      while (state[ei].length > 0) {
+        const top = state[ei][state[ei].length - 1];
+        const dest = activeIdx.find(i => state[i].length < cap && !wouldComplete(top, state[i]));
+        if (dest === undefined) break;
+        move(ei, dest, -1);
+      }
+    }
+
+    // Single DOM commit
+    allTubes.forEach((tube, i) => { tube.contents = state[i]; });
+    this.#initialColors = state.map(s => [...s]);
+  }
+
+  async animatedShuffle() {
+    const allTubes = [...this.querySelectorAll("test-tube")];
+    const cap = this.levels;
+    const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+    
+    const wouldComplete = (from, to) => {
+      const toC = to.contents;
+      return toC.length + 1 === cap && toC.every((c) => c === from.top);
+    };
+
+    this.style.pointerEvents = "none";
+    // Snapshot empty vs. active tubes — empty tubes must end empty
+    const emptyTubes = allTubes.filter((t) => !t.contents.length);
+    const activeTubes = allTubes.filter((t) => t.contents.length > 0);
+    const steps = ((allTubes.length * cap)**1.5)|0;
+    const animate = steps <= 256;
+    const totalSteps = steps + emptyTubes.length * 2;
+    // const tooMany = steps
+    console.log(totalSteps);
+    const stepDur = Math.min(MAX_SHUFFLE_TIME / totalSteps, 120);
+
+    for (let i = 0; i < emptyTubes.length; i++) {
+      const source = activeTubes[i % activeTubes.length];
+      const target = emptyTubes[i];
+      const min = 1;
+      const max = Math.min(source.contents.length, cap - target.contents.length);
+      const count = (Math.random() * (max - min))|0 + min;
+      this.shufflePour(source, target, count, animate);
+      await delay(stepDur);
+    }
+
+    for (let i = 0; i < steps; i++) {
+      const sources = allTubes.filter((t) => t.contents.length > 1);
+      const from = sources[(this.#random() * sources.length)|0];
+      if (!from) continue;
+      const dests = allTubes.filter(
+        (t) => t !== from && t.contents.length < cap && !wouldComplete(from, t)
+      );
+      if (!dests.length) continue;
+      const to = dests[(this.#random() * dests.length)|0];
+      const min = 1;
+      const max = Math.min(from.contents.length, cap - to.contents.length);
+      const count = (Math.random() * (max - min))|0 + min;
+      this.shufflePour(from, to, count, animate);
+      await delay(stepDur);
+    }
+
+    for (const tube of emptyTubes) {
+      while (tube.contents.length > 0) {
+        const dest = activeTubes.find(
+          (t) => t.contents.length < cap && !wouldComplete(tube, t)
+        );
+        if (!dest) break;
+        this.shufflePour(tube, dest, -1, animate);
+        await delay(stepDur);
+      }
+    }
+
+    this.style.pointerEvents = "";
+    // Shuffled layout becomes the reset state
+    this.#initialColors = allTubes.map((t) => [...t.contents]);
+  }
+
   async undoAll() {
     [...this.querySelectorAll("test-tube")].forEach((tube) =>
       tube.removeAttribute("selected")
@@ -171,17 +297,27 @@ class SortPuzzle extends HTMLElement {
 
   #calculateSize() {
     const { tubes } = this;
-    let { width, height } = visualViewport;
-    this.style.maxHeight = `${height}px`;
-    document.body.style.height = `${height}px`;
+    const c = this.querySelector('tube-container');
+    if (!c) {
+      return;
+    }
+    let { width } = visualViewport;
+    let { height } = c.getBoundingClientRect();
+    // this.style.maxHeight = `${height}px`;
+    // document.body.style.height = `${height}px`;
     height *= 0.84;
-    const rar = width / (height / tubeRatio);
+    const rar = width * tubeRatio / height;
     const rows = Math.round(Math.sqrt(tubes / rar));
     const cols = Math.ceil(tubes / rows);
     const maxTubeWidth = (width * (2 / 3)) / cols;
     const maxTubeHeight = (height * (2 / 3)) / rows / tubeRatio;
     const fontSize = Math.min(maxTubeWidth, maxTubeHeight);
     this.style.fontSize = `${fontSize}px`;
+    
+    if (c) {
+      c.style.maxWidth = `${fontSize * cols * 1.5}px`;
+      // c.style.maxHeight = `${fontSize * rows * 4.5}px`;
+    }
   }
 
   seed() {
@@ -227,14 +363,18 @@ class SortPuzzle extends HTMLElement {
       }
     }
     this.#initialColors = [];
+    const hud = this.ownerDocument.createElement("sort-hud");
+    this.appendChild(hud);
+    
     const tubeContainer = this.ownerDocument.createElement("tube-container");
     this.appendChild(tubeContainer);
-    // Pick them into the first `tubes` tubes at random,
+    // Pick them into the first `tubes`,
     // and append the tubes to the document.
     for (let i = 0; i < colors; i++) {
       const tube = [];
       for (let j = 0; j < this.levels; j++) {
-        const next = bin.splice(floor(this.#random() * bin.length), 1);
+        // const next = bin.splice(floor(this.#random() * bin.length), 1);
+        const next = bin.shift();
         tube.push(next);
       }
       tubeContainer.appendChild(testTubes[i]);
@@ -245,16 +385,17 @@ class SortPuzzle extends HTMLElement {
       this.#initialColors.push([]);
       tubeContainer.appendChild(testTubes[i]);
     }
-    const hud = this.ownerDocument.createElement("sort-hud");
     hud.appendChild(this.levelIndicator());
     const hudRight = this.ownerDocument.createElement("hud-buttons");
     hud.appendChild(hudRight);
     hudRight.appendChild(this.hintButton());
     hudRight.appendChild(this.undoButton());
     hudRight.appendChild(this.resetButton());
-    this.appendChild(hud);
+    
     this.#history = [];
     localStorage.setItem("level", this.level);
+    this.shuffleNow();
+    this.#calculateSize();
   }
 
   levelIndicator() {
@@ -439,5 +580,6 @@ class SortPuzzle extends HTMLElement {
     window.removeEventListener('hashchange', this.#hashChange);
   }
 }
-
-customElements.define("sort-puzzle", SortPuzzle);
+try {
+  customElements.define("sort-puzzle", SortPuzzle);
+} catch (e) {}
